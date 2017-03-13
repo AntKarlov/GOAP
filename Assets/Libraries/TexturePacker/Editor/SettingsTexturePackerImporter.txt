@@ -1,0 +1,68 @@
+version: 2
+importPivots: 1
+tpsheetFileNames:
+- Assets/Resources/Things/Textures/Things.tpsheet
+- Assets/Textures/Editor/EditorTextures.tpsheet
+- Assets/Textures/Effects/Fire/Fire01.tpsheet
+- Assets/Textures/Effects/Pieces/Pieces01.tpsheet
+- Assets/Textures/Effects/Smoke/Smoke.tpsheet
+- Assets/Textures/Fragments/Fragments.tpsheet
+- Assets/Textures/Graphics.tpsheet
+- Assets/Textures/Interface/Inventory/Inventory.tpsheet
+- Assets/Textures/Interface/Inventory/Masks.tpsheet
+- Assets/Textures/Location/Decoration/Decoration01.tpsheet
+- Assets/Textures/Location/Floor/Floor01.tpsheet
+- Assets/Textures/Location/Foreground/Foreground01.tpsheet
+- Assets/Textures/Location/LightEffects/LightEffects01.tpsheet
+- Assets/Textures/Location/Objects/Objects01.tpsheet
+- Assets/Textures/Location/Pillars/Pillars01.tpsheet
+- Assets/Textures/Location/Plants/Plants01.tpsheet
+- Assets/Textures/Location/Things/Things01.tpsheet
+- Assets/Textures/Location/Walls/Walls01.tpsheet
+- Assets/Textures/Location/Wires/Wire01.tpsheet
+- Assets/Textures/Misc/Misc01.tpsheet
+- Assets/Textures/Test.tpsheet
+textureFileNames:
+- Assets/Resources/Things/Textures/Things.png
+- Assets/Textures/Editor/EditorTextures.png
+- Assets/Textures/Effects/Fire/Fire01.png
+- Assets/Textures/Effects/Pieces/Pieces01.png
+- Assets/Textures/Effects/Smoke/Smoke.png
+- Assets/Textures/Fragments/Fragments.png
+- Assets/Textures/Graphics.png
+- Assets/Textures/Interface/Inventory/Inventory.png
+- Assets/Textures/Interface/Inventory/Masks.png
+- Assets/Textures/Location/Decoration/Decoration01.png
+- Assets/Textures/Location/Floor/Floor01.png
+- Assets/Textures/Location/Foreground/Foreground01.png
+- Assets/Textures/Location/LightEffects/LightEffects01.png
+- Assets/Textures/Location/Objects/Objects01.png
+- Assets/Textures/Location/Pillars/Pillars01.png
+- Assets/Textures/Location/Plants/Plants01.png
+- Assets/Textures/Location/Things/Things01.png
+- Assets/Textures/Location/Walls/Walls01.png
+- Assets/Textures/Location/Wires/Wire01.png
+- Assets/Textures/Misc/Misc01.png
+- Assets/Textures/Test.png
+normalmapFileNames:
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 

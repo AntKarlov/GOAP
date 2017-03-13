@@ -1,0 +1,822 @@
+fileFormatVersion: 2
+guid: d28e0ec6af4394418a3df81089ba9c4f
+timeCreated: 1489187970
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: TankB1-01
+    21300002: TankB1-02
+    21300004: TankB1-03
+    21300006: TankB1-04
+    21300008: GunItem-01
+    21300010: GunItem-02
+    21300012: GunItem-03
+    21300014: GunItem-04
+    21300016: GunItem-05
+    21300018: GunItem-06
+    21300020: GunItem-07
+    21300022: AmmoItem-01
+    21300024: AmmoItem-02
+    21300026: AmmoItem-03
+    21300028: AmmoItem-04
+    21300030: AmmoItem-05
+    21300032: AmmoItem-06
+    21300034: AmmoItem-07
+    21300036: BombItem-01
+    21300038: BombItem-02
+    21300040: BombItem-03
+    21300042: BombItem-04
+    21300044: BombItem-05
+    21300046: BombItem-06
+    21300048: BombItem-07
+    21300050: Box-01
+    21300052: Bullet-01
+    21300054: HealItem-01
+    21300056: HealItem-02
+    21300058: HealItem-03
+    21300060: HealItem-04
+    21300062: HealItem-05
+    21300064: HealItem-06
+    21300066: HealItem-07
+    21300068: HPBar-01
+    21300070: HPBar-02
+    21300072: HPBar-03
+    21300074: HPBar-04
+    21300076: Rock-01
+    21300078: Rock-02
+    21300080: TankB2-01
+    21300082: TankB2-02
+    21300084: TankB2-03
+    21300086: TankB2-04
+    21300088: Tree-01
+    21300090: Ground-01
+    21300092: Ground-02
+    21300094: Ground-03
+    21300096: TankTower-01
+    21300098: TankTower-02
+    21300100: TankTower-03
+    21300102: TankTower-04
+    21300104: GunTower-01
+    21300106: GunTower-02
+    21300108: GunTower-03
+    21300110: GunTower-04
+    21300112: BombTower-01
+  serializedVersion: 4
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: -1
+    aniso: -1
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  platformSettings:
+  - buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+  - buildTarget: Standalone
+    maxTextureSize: 2048
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: AmmoItem-01
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 475
+        width: 62
+        height: 57
+      alignment: 9
+      pivot: {x: 0.5322581, y: 0.57894737}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: AmmoItem-02
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 470
+        width: 62
+        height: 57
+      alignment: 9
+      pivot: {x: 0.5322581, y: 0.57894737}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: AmmoItem-03
+      rect:
+        serializedVersion: 2
+        x: 276
+        y: 549
+        width: 62
+        height: 57
+      alignment: 9
+      pivot: {x: 0.5322581, y: 0.57894737}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: AmmoItem-04
+      rect:
+        serializedVersion: 2
+        x: 340
+        y: 533
+        width: 62
+        height: 57
+      alignment: 9
+      pivot: {x: 0.5322581, y: 0.57894737}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: AmmoItem-05
+      rect:
+        serializedVersion: 2
+        x: 276
+        y: 490
+        width: 62
+        height: 57
+      alignment: 9
+      pivot: {x: 0.5322581, y: 0.57894737}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: AmmoItem-06
+      rect:
+        serializedVersion: 2
+        x: 210
+        y: 463
+        width: 62
+        height: 57
+      alignment: 9
+      pivot: {x: 0.5322581, y: 0.57894737}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: AmmoItem-07
+      rect:
+        serializedVersion: 2
+        x: 404
+        y: 533
+        width: 62
+        height: 57
+      alignment: 9
+      pivot: {x: 0.5322581, y: 0.57894737}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: BombItem-01
+      rect:
+        serializedVersion: 2
+        x: 85
+        y: 686
+        width: 77
+        height: 97
+      alignment: 9
+      pivot: {x: 0.5649351, y: 0.46907216}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: BombItem-02
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 615
+        width: 77
+        height: 97
+      alignment: 9
+      pivot: {x: 0.5649351, y: 0.46907216}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: BombItem-03
+      rect:
+        serializedVersion: 2
+        x: 164
+        y: 686
+        width: 77
+        height: 97
+      alignment: 9
+      pivot: {x: 0.5649351, y: 0.46907216}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: BombItem-04
+      rect:
+        serializedVersion: 2
+        x: 243
+        y: 608
+        width: 77
+        height: 97
+      alignment: 9
+      pivot: {x: 0.5649351, y: 0.46907216}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: BombItem-05
+      rect:
+        serializedVersion: 2
+        x: 322
+        y: 608
+        width: 77
+        height: 97
+      alignment: 9
+      pivot: {x: 0.5649351, y: 0.46907216}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: BombItem-06
+      rect:
+        serializedVersion: 2
+        x: 401
+        y: 592
+        width: 77
+        height: 97
+      alignment: 9
+      pivot: {x: 0.5649351, y: 0.46907216}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: BombItem-07
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 510
+        width: 77
+        height: 97
+      alignment: 9
+      pivot: {x: 0.5649351, y: 0.46907216}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: BombTower-01
+      rect:
+        serializedVersion: 2
+        x: 559
+        y: 475
+        width: 76
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: Box-01
+      rect:
+        serializedVersion: 2
+        x: 885
+        y: 434
+        width: 84
+        height: 83
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: Bullet-01
+      rect:
+        serializedVersion: 2
+        x: 967
+        y: 742
+        width: 42
+        height: 31
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: Ground-01
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 620
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: Ground-02
+      rect:
+        serializedVersion: 2
+        x: 513
+        y: 865
+        width: 200
+        height: 158
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: Ground-03
+      rect:
+        serializedVersion: 2
+        x: 873
+        y: 903
+        width: 131
+        height: 120
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: GunItem-01
+      rect:
+        serializedVersion: 2
+        x: 641
+        y: 784
+        width: 68
+        height: 79
+      alignment: 9
+      pivot: {x: 0.5808824, y: 0.51265824}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: GunItem-02
+      rect:
+        serializedVersion: 2
+        x: 641
+        y: 703
+        width: 68
+        height: 79
+      alignment: 9
+      pivot: {x: 0.5808824, y: 0.51265824}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: GunItem-03
+      rect:
+        serializedVersion: 2
+        x: 639
+        y: 622
+        width: 68
+        height: 79
+      alignment: 9
+      pivot: {x: 0.5808824, y: 0.51265824}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: GunItem-04
+      rect:
+        serializedVersion: 2
+        x: 639
+        y: 541
+        width: 68
+        height: 79
+      alignment: 9
+      pivot: {x: 0.5808824, y: 0.51265824}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: GunItem-05
+      rect:
+        serializedVersion: 2
+        x: 637
+        y: 460
+        width: 68
+        height: 79
+      alignment: 9
+      pivot: {x: 0.5808824, y: 0.51265824}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: GunItem-06
+      rect:
+        serializedVersion: 2
+        x: 707
+        y: 400
+        width: 68
+        height: 79
+      alignment: 9
+      pivot: {x: 0.5808824, y: 0.51265824}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: GunItem-07
+      rect:
+        serializedVersion: 2
+        x: 777
+        y: 367
+        width: 68
+        height: 79
+      alignment: 9
+      pivot: {x: 0.5808824, y: 0.51265824}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: GunTower-01
+      rect:
+        serializedVersion: 2
+        x: 709
+        y: 481
+        width: 86
+        height: 69
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: GunTower-02
+      rect:
+        serializedVersion: 2
+        x: 797
+        y: 448
+        width: 86
+        height: 69
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: GunTower-03
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 714
+        width: 82
+        height: 69
+      alignment: 9
+      pivot: {x: 0.47560975, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: GunTower-04
+      rect:
+        serializedVersion: 2
+        x: 559
+        y: 541
+        width: 76
+        height: 66
+      alignment: 9
+      pivot: {x: 0.43421054, y: 0.52272725}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: HealItem-01
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 600
+        width: 63
+        height: 84
+      alignment: 9
+      pivot: {x: 0.53968257, y: 0.5833333}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: HealItem-02
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 534
+        width: 63
+        height: 84
+      alignment: 9
+      pivot: {x: 0.53968257, y: 0.5833333}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: HealItem-03
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 529
+        width: 63
+        height: 84
+      alignment: 9
+      pivot: {x: 0.53968257, y: 0.5833333}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: HealItem-04
+      rect:
+        serializedVersion: 2
+        x: 847
+        y: 348
+        width: 63
+        height: 84
+      alignment: 9
+      pivot: {x: 0.53968257, y: 0.5833333}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: HealItem-05
+      rect:
+        serializedVersion: 2
+        x: 912
+        y: 348
+        width: 63
+        height: 84
+      alignment: 9
+      pivot: {x: 0.53968257, y: 0.5833333}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: HealItem-06
+      rect:
+        serializedVersion: 2
+        x: 211
+        y: 522
+        width: 63
+        height: 84
+      alignment: 9
+      pivot: {x: 0.53968257, y: 0.5833333}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: HealItem-07
+      rect:
+        serializedVersion: 2
+        x: 145
+        y: 514
+        width: 63
+        height: 84
+      alignment: 9
+      pivot: {x: 0.53968257, y: 0.5833333}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: HPBar-01
+      rect:
+        serializedVersion: 2
+        x: 421
+        y: 787
+        width: 88
+        height: 46
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: HPBar-02
+      rect:
+        serializedVersion: 2
+        x: 421
+        y: 739
+        width: 88
+        height: 46
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: HPBar-03
+      rect:
+        serializedVersion: 2
+        x: 421
+        y: 691
+        width: 88
+        height: 46
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: HPBar-04
+      rect:
+        serializedVersion: 2
+        x: 709
+        y: 552
+        width: 88
+        height: 46
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: Rock-01
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 785
+        width: 290
+        height: 238
+      alignment: 9
+      pivot: {x: 0.5, y: 0.46008402}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: Rock-02
+      rect:
+        serializedVersion: 2
+        x: 715
+        y: 856
+        width: 156
+        height: 167
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: TankB1-01
+      rect:
+        serializedVersion: 2
+        x: 873
+        y: 775
+        width: 126
+        height: 126
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: TankB1-02
+      rect:
+        serializedVersion: 2
+        x: 513
+        y: 737
+        width: 126
+        height: 126
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: TankB1-03
+      rect:
+        serializedVersion: 2
+        x: 711
+        y: 728
+        width: 126
+        height: 126
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: TankB1-04
+      rect:
+        serializedVersion: 2
+        x: 839
+        y: 647
+        width: 126
+        height: 126
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: TankB2-01
+      rect:
+        serializedVersion: 2
+        x: 711
+        y: 600
+        width: 126
+        height: 126
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: TankB2-02
+      rect:
+        serializedVersion: 2
+        x: 839
+        y: 519
+        width: 126
+        height: 126
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: TankB2-03
+      rect:
+        serializedVersion: 2
+        x: 293
+        y: 707
+        width: 126
+        height: 126
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: TankB2-04
+      rect:
+        serializedVersion: 2
+        x: 511
+        y: 609
+        width: 126
+        height: 126
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: Tree-01
+      rect:
+        serializedVersion: 2
+        x: 293
+        y: 835
+        width: 218
+        height: 188
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,25 @@
+{
+	// Пример того как сценарий поведения может быть описан во внешнем файле.
+	// Данный файл не используется в коде.
+	"Scout": {
+		"Pre": [ "ArmedWithGun" ],
+		"Post": [ "EnemyVisible" ],
+		"Cost": 1
+	},
+	"Search": {
+		"Pre": [ "!ArmedWithGun" ],
+		"Post": [ "GunInlineOfSight" ],
+		"Cost": 1
+	},
+	"Pickup": {
+		"Pre": [
+			"!ArmedWithGun",
+			"GunInlineOfSight"
+		],
+		"Post": [ 
+			"ArmedWithGun",
+			"!GunInlineOfSight"
+		],
+		"Cost": 1
+	}
+}
