@@ -77,6 +77,20 @@ namespace Game.Systems
 
 		private void OnHealthNodeRemoved(HealthNode aNode)
 		{
+			// Подсчет статистики.
+			Vision vision = aNode.entity.GetComponent<Vision>();
+			if (vision != null)
+			{
+				if (vision.group == GroupEnum.GreenTeam)
+				{
+					_gameCore.GreenKills++;
+				}
+				else if (vision.group == GroupEnum.RedTeam)
+				{
+					_gameCore.RedKills++;
+				}
+			}
+
 			int index = _healthBars.FindIndex(x => System.Object.ReferenceEquals(x.Key, aNode));
 			if (index >= 0 && index < _healthBars.Count)
 			{

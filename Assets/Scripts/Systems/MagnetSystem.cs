@@ -116,41 +116,36 @@ namespace Game.Systems
 
 		private void DropItem(ItemKind aKind, Vector3 aPosition)
 		{
-			float angle = AntMath.DegToRad(AntMath.RandomRangeFloat(-180, 180));
-			Vector2 force = new Vector2();
-			force.x = 0.5f * Mathf.Cos(angle);
-			force.y = 0.5f * Mathf.Sin(angle);
-
-			GameObject go;
+			GameObject go = null;
 			switch (aKind)
 			{
 				case ItemKind.Bomb :
 					go = GameObject.Instantiate((GameObject)_gameCore.bombItemPrefab);
-					go.GetComponent<Transform>().position = aPosition;
-					go.GetComponent<Rigidbody2D>().AddForce(force, ForceMode2D.Impulse);
-					Engine.AddEntity(go.GetComponent<AntEntity>());
 				break;
 
 				case ItemKind.Gun :
 					go = GameObject.Instantiate((GameObject)_gameCore.gunItemPrefab);
-					go.GetComponent<Transform>().position = aPosition;
-					go.GetComponent<Rigidbody2D>().AddForce(force, ForceMode2D.Impulse);
-					Engine.AddEntity(go.GetComponent<AntEntity>());
 				break;
 
 				case ItemKind.Ammo :
 					go = GameObject.Instantiate((GameObject)_gameCore.ammoItemPrefab);
-					go.GetComponent<Transform>().position = aPosition;
-					go.GetComponent<Rigidbody2D>().AddForce(force, ForceMode2D.Impulse);
-					Engine.AddEntity(go.GetComponent<AntEntity>());
 				break;
 
 				case ItemKind.Heal :
 					go = GameObject.Instantiate((GameObject)_gameCore.healItemPrefab);
-					go.GetComponent<Transform>().position = aPosition;
-					go.GetComponent<Rigidbody2D>().AddForce(force, ForceMode2D.Impulse);
-					Engine.AddEntity(go.GetComponent<AntEntity>());
 				break;
+			}
+
+			if (go != null)
+			{
+				float angle = AntMath.DegToRad(AntMath.RandomRangeFloat(-180, 180));
+				Vector2 force = new Vector2();
+				force.x = 0.5f * Mathf.Cos(angle);
+				force.y = 0.5f * Mathf.Sin(angle);
+
+				go.GetComponent<Transform>().position = aPosition;
+				go.GetComponent<Rigidbody2D>().AddForce(force, ForceMode2D.Impulse);
+				Engine.AddEntity(go.GetComponent<AntEntity>());
 			}
 		}
 	}

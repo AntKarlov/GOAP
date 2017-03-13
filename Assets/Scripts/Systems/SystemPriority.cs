@@ -10,5 +10,7 @@ namespace Game.Systems
 		public static int aiControlSystem = 2;
 		public static int magnetSystem = 3;
 		public static int healthSystem = 4;
+		public static int dropperSystem = 5;
+		public static int spawnSystem = 6;
 	}
 }
