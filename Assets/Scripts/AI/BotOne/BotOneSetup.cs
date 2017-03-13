@@ -36,6 +36,7 @@ namespace Game.AI.BotOne
 				new ScheduleSearchAmmo(),
 				new SchedulePickupAmmo(),
 				new SchedulePickupBomb(),
+				new ScheduleSearchHeal(),
 				new SchedulePickupHeal(),
 				new ScheduleScout(),
 				new ScheduleAim(),

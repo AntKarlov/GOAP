@@ -6,6 +6,9 @@ namespace Game.Components
 {
 	public class AIControl : MonoBehaviour
 	{
+		[Tooltip("Вкл. вывод плана составляемого ботом в консоль.")]
+		public bool outputPlan = false;
+
 		[NonSerializedAttribute] public ISense sense;
 		[NonSerializedAttribute] public ILogic logic;
 		[NonSerializedAttribute] public AntAISchedule[] schedules;

@@ -26,7 +26,7 @@ namespace Game.AI.BotOne
 		{
 			base.Stop(aObject);
 			// Выключаем магнит.
-			_magnet.magnetKind = ItemKind.Heal;
+			_magnet.magnetKind = ItemKind.None;
 		}
 
 		private bool OnFindPath()

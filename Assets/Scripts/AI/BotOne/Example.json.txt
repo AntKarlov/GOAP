@@ -1,25 +1,176 @@
+// Это пример хранения сценария бота во внешнем файле.
+// Данный файл не используется в коде.
 {
-	// Пример того как сценарий поведения может быть описан во внешнем файле.
-	// Данный файл не используется в коде.
-	"Scout": {
-		"Pre": [ "ArmedWithGun" ],
+	"ScoutWithGun": {
+		"Pre": [ 
+			"ArmedWithGun", 
+			"HasAmmo", 
+			"Alive"
+		],
 		"Post": [ "EnemyVisible" ],
-		"Cost": 1
+		"Schedule": "Scout"
 	},
-	"Search": {
-		"Pre": [ "!ArmedWithGun" ],
-		"Post": [ "GunInlineOfSight" ],
-		"Cost": 1
+
+	"ScoutWithBomb": {
+		"Pre": [ "ArmedWithBomb" ],
+		"Post": [ "EnemyVisible" ],
+		"Schedule": "Scout"
 	},
-	"Pickup": {
+
+	"PickupBomb":
+	{
 		"Pre": [
+			"BombInlineOfSight", 
+			"!ArmedWithGun",
+			"!ArmedWithBomb"
+		],
+		"Post": [
+			"ArmedWithBomb",
+			"!BombInlineOfSight"
+		],
+		"Schedule": "PickupBomb"
+	},
+
+	"PickupBombWithGun": {
+		"Pre": [
+			"BombInlineOfSight",
+			"!AmmoInlineOfSight",
+			"ArmedWithGun",
+			"!HasAmmo"
+		],
+		"Post": [
+			"!ArmedWithBomb",
+			"!BombInlineOfSight",
+			"ArmedWithBomb"
+		],
+		"Schedule": "PickupBomb"
+	},
+
+	"SearchGun": {
+		"Pre": [ 
+			"!ArmedWithGun",
+			"!ArmedWithBomb",
+			"!BombInlineOfSight"
+		],
+		"Post": [
+			"GunInlineOfSight"
+		],
+		"Schedule": "SearchGun",
+		"Cost": 1
+	},
+
+	"PickupGun": {
+		"Pre": [ 
 			"!ArmedWithGun",
 			"GunInlineOfSight"
 		],
-		"Post": [ 
+		"Post": [
 			"ArmedWithGun",
-			"!GunInlineOfSight"
+			"!GunInlingOfSight"
 		],
+		"Schedule": "PickupGun"
+	},
+
+	"SearchAmmo": {
+		"Pre": [
+			"ArmedWithGun",
+			"!HasAmmo"
+		],
+		"Post": [
+			"AmmoInlineOfSight"
+		],
+		"Schedule": "SearchAmmo",
+		"Cost": 2
+	},
+
+	"PickupAmmo": {
+		"Pre": [
+			"ArmedWithGun",
+			"!HasAmmo",
+			"AmmoInlineOfSight"
+		],
+		"Post": [
+			"HasAmmo",
+			"!AmmoInlineOfSight"
+		],
+		"Schedule": "PickupAmmo"
+	},
+
+	"Approach": {
+		"Pre": [
+			"EnemyVisible",
+			"ArmedWithBomb"
+		],
+		"Post": [
+			"NearEnemy"
+		],
+		"Schedule": "Approach"
+	},
+
+	"Aim": {
+		"Pre": [
+			"EnemyVisible",
+			"ArmedWithGun",
+			"HasAmmo"
+		],
+		"Post": [
+			"EnemyLinedUp"
+		],
+		"Schedule": "Aim",
 		"Cost": 1
+	},
+
+	"Shot": {
+		"Pre": [
+			"HasAmmo",
+			"EnemyLinedUp"
+		],
+		"Post": [
+			"!EnemyAlive",
+			"!EnemyVisible",
+			"!EnemyLinedUp"
+		],
+		"Schedule": "Shot",
+		"Cost": 1
+	},
+
+	"DetonateBomb": {
+		"Pre": [
+			"ArmedWithBomb",
+			"NearEnemy"
+		],
+		"Post": [
+			"!EnemyAlive",
+			"!Alive",
+			"!ArmedWithBomb",
+			"!Injured"
+		],
+		"Schedule": "DetonateBomb",
+		"Cost": 3
+	},
+
+	"SearchHeal": {
+		"Pre": [
+			"Injured",
+			"!EnemyVisible",
+			"!HealInlineOfSight"
+		],
+		"Post": [
+			"HealInlineOfSight"
+		],
+		"Schedule": "SearchHeal",
+		"Cost": 4
+	},
+
+	"PickupHeal": {
+		"Pre": [
+			"HealInlineOfSight",
+			"Injured"
+		],
+		"Post": [
+			"!HealInlineOfSight",
+			"!Injured"
+		],
+		"Schedule": "PickupHeal"
 	}
 }

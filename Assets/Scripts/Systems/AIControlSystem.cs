@@ -49,7 +49,7 @@ namespace Game.Systems
 						{
 							// Если текущий набор действий завершен или был прерван,
 							// то выбираем новый набор действий и принудительно устанавливаем его.
-							ai.SetSchedule(ai.logic.SelectNewSchedule(ai.conditions, true), true);
+							ai.SetSchedule(ai.logic.SelectNewSchedule(ai.conditions), true);
 						}
 						else
 						{
