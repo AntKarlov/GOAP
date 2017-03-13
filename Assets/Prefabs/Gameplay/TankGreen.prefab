@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 4813320877673390}
   - component: {fileID: 212841164635619526}
   - component: {fileID: 58830771505992298}
+  - component: {fileID: 58139860392148844}
   - component: {fileID: 50993897534753470}
   - component: {fileID: 114970453954144530}
   - component: {fileID: 114550492229170806}
@@ -29,6 +30,7 @@ GameObject:
   - component: {fileID: 114857956995027602}
   - component: {fileID: 114402149833473316}
   - component: {fileID: 114880889259225062}
+  - component: {fileID: 114205184045014346}
   - component: {fileID: 114218470013338932}
   - component: {fileID: 114043621649706758}
   - component: {fileID: 114660731454008096}
@@ -77,7 +79,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1391783177018186}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -4.93, y: 2.09, z: 0}
+  m_LocalPosition: {x: -5.37, y: -2.01, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4169297418045328}
@@ -104,6 +106,20 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!58 &58139860392148844
+CircleCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1391783177018186}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_Offset: {x: 0.42, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.33510542
 --- !u!58 &58830771505992298
 CircleCollider2D:
   m_ObjectHideFlags: 1
@@ -133,6 +149,17 @@ MonoBehaviour:
   force: 0.025
   collectDistance: 0.5
   magnetKind: 0
+--- !u!114 &114205184045014346
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1391783177018186}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa07b4712b18c46d584b711db13a7b10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114205213687843838
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -219,7 +246,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHP: 3
-  initialHP: 2
+  initialHP: 3
 --- !u!114 &114740433438554276
 MonoBehaviour:
   m_ObjectHideFlags: 1

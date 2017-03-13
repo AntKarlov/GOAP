@@ -32,18 +32,7 @@ namespace Game.Components
 		{
 			if (Config.Instance.showVision)
 			{
-				AntDrawer.DrawCircle(_t.position.x, _t.position.y, radius, Color.white);
-
-				float ang = AntMath.DegToRad(Angle + lowerLimit);
-				Vector2 p = new Vector2();
-				p.x = _t.position.x + radius * Mathf.Cos(ang);
-				p.y = _t.position.y + radius * Mathf.Sin(ang);
-				AntDrawer.DrawLine(_t.position.x, _t.position.y, p.x, p.y, Color.red);
-
-				ang = AntMath.DegToRad(Angle + upperLimit);
-				p.x = _t.position.x + radius * Mathf.Cos(ang);
-				p.y = _t.position.y + radius * Mathf.Sin(ang);
-				AntDrawer.DrawLine(_t.position.x, _t.position.y, p.x, p.y, Color.red);
+				AntDrawer.DrawPie(_t.position.x, _t.position.y, radius, Angle, lowerLimit, upperLimit, Color.green);
 			}
 		}
 
@@ -61,7 +50,7 @@ namespace Game.Components
 				{
 					if (Config.Instance.showVision)
 					{
-						AntDrawer.DrawLine(_t.position.x, _t.position.y, aPoint.x, aPoint.y, Color.green);
+						AntDrawer.DrawLine(_t.position.x, _t.position.y, aPoint.x, aPoint.y, Color.yellow);
 					}
 					return true;
 				}

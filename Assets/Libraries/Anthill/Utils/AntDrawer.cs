@@ -146,14 +146,12 @@ namespace Anthill.Utils
 				float angle = 0.0f;
 				for (int i = 0; i < aVertices; i++)
 				{
-					angle = ((i / (float)aVertices) * 360f) / 180f * Mathf.PI;
+					angle = ((i / (float)aVertices) * 360.0f) / 180.0f * Mathf.PI;
 					float dx = aRadius;
-					float dy = 0f;
-
+					float dy = 0.0f;
 					vertices[i] = new Vector2(aX + Mathf.Cos(angle) * dx - Mathf.Sin(angle) * dy,
 							aY - (Mathf.Sin(angle) * dx + Mathf.Cos(angle) * dy));
 				}
-
 				DrawPath(vertices, aColor, true);
 			}
 		}
@@ -161,6 +159,33 @@ namespace Anthill.Utils
 		public static void DrawCircle(Vector2 aPoint, float aRadius, Color aColor, int aVertices = 12)
 		{
 			DrawCircle(aPoint.x, aPoint.y, aRadius, aColor, aVertices);
+		}
+
+		public static void DrawPie(float aX, float aY, float aRadius, float aAngle, 
+			float aLowerAngle, float aUpperAngle, Color aColor, int aVertices = 12)
+		{
+			if (aVertices >= 3)
+			{
+				Vector2[] vertices = new Vector2[aVertices + 1];
+				float sum = Mathf.Abs(aLowerAngle) + Mathf.Abs(aUpperAngle);
+				float angle = 0.0f;
+				for (int i = 0; i < aVertices; i++)
+				{
+					angle = ((aLowerAngle + ((i / (float)(aVertices - 1)) * sum)) - aAngle) / 180.0f * Mathf.PI;
+					float dx = aRadius;
+					float dy = 0.0f;
+					vertices[i] = new Vector2(aX + Mathf.Cos(angle) * dx - Mathf.Sin(angle) * dy,
+							aY - (Mathf.Sin(angle) * dx + Mathf.Cos(angle) * dy));
+				}
+				vertices[vertices.Length - 1] = new Vector2(aX, aY);
+				DrawPath(vertices, aColor, true);
+			}
+		}
+
+		public static void DrawPie(Vector2 aPoint, float aRadius, float aAngle,
+			float aLowerAngle, float aUpperAngle, Color aColor, int aVertices = 12)
+		{
+			DrawPie(aPoint.x, aPoint.y, aRadius, aAngle, aLowerAngle, aUpperAngle, aColor, aVertices);
 		}
 
 		public static void DrawConnection(float aX1, float aY1, float aX2, float aY2, Color aColor,

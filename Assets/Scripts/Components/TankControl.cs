@@ -42,9 +42,15 @@ namespace Game.Components
 
 		public void Steering(float aDir, float aDeltaTime)
 		{
+			float angle = _t.rotation.eulerAngles.z + steering * aDir * 0.6f;
+			_body.rotation = AntMath.LerpAngle(_body.rotation, angle, aDeltaTime);
+
+			/*
+			// Старый код вращения без физ тела.
 			float angle = _t.rotation.eulerAngles.z + steering * aDir;
 			Quaternion q = Quaternion.AngleAxis(angle, Vector3.forward);
  			_t.rotation = Quaternion.Slerp(_t.rotation, q, aDeltaTime);
+			//*/ 
 		}
 
 		public void Move(float aDir, float aDeltaTime)

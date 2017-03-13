@@ -14,6 +14,10 @@ namespace Game.Components
 		private float _maxHP;
 		private float _hp;
 
+		// -----------------------------------------------------
+		// Unity Callbacks
+		// -----------------------------------------------------
+
 		private void Awake()
 		{
 			_t = GetComponent<Transform>();
@@ -21,7 +25,11 @@ namespace Game.Components
 			_sprite = GetComponent<SpriteRenderer>();
 		}
 
-		private void UpdateVisual()
+		// -----------------------------------------------------
+		// Public Methods
+		// -----------------------------------------------------
+
+		public void UpdateVisual()
 		{
 			int f = Mathf.FloorToInt((_hp / _maxHP) * (float) _actor.TotalFrames) + 1;
 			f = (f <= 0) ? 1 : (f > _actor.TotalFrames) ? _actor.TotalFrames : f;
@@ -33,6 +41,10 @@ namespace Game.Components
 		{
 			DestroyObject(this.gameObject);
 		}
+
+		// -----------------------------------------------------
+		// Getters/Setters
+		// -----------------------------------------------------
 
 		public Vector3 Position
 		{

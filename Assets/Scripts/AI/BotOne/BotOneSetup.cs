@@ -12,6 +12,7 @@ namespace Game.AI.BotOne
 	[RequireComponent(typeof(AIControl))]
 	public class BotOneSetup : MonoBehaviour
 	{
+		[Tooltip("Задержка между циклами обновления состояния мира и обдумывания нового плана.")]
 		public float updateInterval = 0.2f;
 		private AIControl _control;
 

@@ -20,7 +20,7 @@ namespace Game.AI.BotOne
 		public Backboard backboard; // Память танка.
 		public Health health; // Здоровье.
 		public Vision vision; // Зрение танка.
-		//public Sense sense; // Сенсор танка.
+		public Sensor sensor; // Сенсор танка.
 
 		private AntNodeList<VisualNode> _visualNodes;
 
@@ -30,7 +30,7 @@ namespace Game.AI.BotOne
 			backboard = aObject.GetComponent<Backboard>();
 			health = aObject.GetComponent<Health>();
 			vision = aObject.GetComponent<Vision>();
-			//sense = aObject.GetComponent<Sense>(); // todo
+			sensor = aObject.GetComponent<Sensor>();
 		}
 
 		public void GetConditions(ILogic aLogic, AntAICondition aConditions)
@@ -49,6 +49,12 @@ namespace Game.AI.BotOne
 			aConditions.Set(aLogic.Planner, "Injured", (health.HP != health.maxHP));
 			aConditions.Set(aLogic.Planner, "EnemyAlive", true); // todo
 			aConditions.Set(aLogic.Planner, "Alive", (health.HP > 0.0f));
+			aConditions.Set(aLogic.Planner, "HasObstacle", sensor.HasObstacle);
+
+			if (sensor.HasObstacle)
+			{
+				sensor.HasObstacle = false;
+			}
 
 			// 2. Обрабатываем зрение.
 			// -----------------------

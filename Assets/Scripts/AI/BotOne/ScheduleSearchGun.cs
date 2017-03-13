@@ -9,9 +9,9 @@ namespace Game.AI.BotOne
 	{
 		public ScheduleSearchGun() : base("SearchGun")
 		{
-			// Ищем путь и следуем ему.
 			AddTask(OnFindPath);
 			AddTask(OnMove);
+			AddInterrupt("HasObstacle");
 		}
 
 		private bool OnFindPath()

@@ -11,6 +11,7 @@ namespace Game.AI.BotOne
 		{
 			AddTask(OnFindPath);
 			AddTask(OnMove);
+			AddInterrupt("HasObstacle");
 		}
 
 		private bool OnFindPath()

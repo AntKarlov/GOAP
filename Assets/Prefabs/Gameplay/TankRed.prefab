@@ -39,6 +39,7 @@ GameObject:
   - component: {fileID: 4414115627448088}
   - component: {fileID: 212718617516025560}
   - component: {fileID: 58682958868601122}
+  - component: {fileID: 58931223639116310}
   - component: {fileID: 50372528789359120}
   - component: {fileID: 114860730490154266}
   - component: {fileID: 114357050129430820}
@@ -47,6 +48,7 @@ GameObject:
   - component: {fileID: 114420998744775376}
   - component: {fileID: 114391000336603156}
   - component: {fileID: 114498770290638972}
+  - component: {fileID: 114240433162086130}
   - component: {fileID: 114728936941323928}
   - component: {fileID: 114430015241402944}
   - component: {fileID: 114857352772317850}
@@ -63,14 +65,14 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1442153784927384}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 6.1, y: -1.15, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: 1, w: 0}
+  m_LocalPosition: {x: 5.47, y: 2.21, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4699227112712680}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 180}
 --- !u!4 &4699227112712680
 Transform:
   m_ObjectHideFlags: 1
@@ -118,6 +120,31 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.54148436
+--- !u!58 &58931223639116310
+CircleCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1442153784927384}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_Offset: {x: 0.42, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.33510542
+--- !u!114 &114240433162086130
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1442153784927384}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa07b4712b18c46d584b711db13a7b10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114357050129430820
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -270,7 +297,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHP: 3
-  initialHP: 2
+  initialHP: 3
 --- !u!114 &114860373219951078
 MonoBehaviour:
   m_ObjectHideFlags: 1

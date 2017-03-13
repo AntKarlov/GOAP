@@ -1278,28 +1278,14 @@ Prefab:
       propertyPath: m_RootOrder
       value: 13
       objectReference: {fileID: 0}
-    - target: {fileID: 4414115627448088, guid: 909d466c29f4e4c91b40da92ed5f54f8, type: 2}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 180
-      objectReference: {fileID: 0}
     - target: {fileID: 1442153784927384, guid: 909d466c29f4e4c91b40da92ed5f54f8, type: 2}
       propertyPath: m_Name
       value: TankRed (1)
       objectReference: {fileID: 0}
-    - target: {fileID: 114430015241402944, guid: 909d466c29f4e4c91b40da92ed5f54f8,
-        type: 2}
-      propertyPath: distance
-      value: 1.5
-      objectReference: {fileID: 0}
     - target: {fileID: 114363706061471122, guid: 909d466c29f4e4c91b40da92ed5f54f8,
         type: 2}
       propertyPath: outputPlan
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114857352772317850, guid: 909d466c29f4e4c91b40da92ed5f54f8,
-        type: 2}
-      propertyPath: initialHP
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 909d466c29f4e4c91b40da92ed5f54f8, type: 2}
@@ -4179,20 +4165,6 @@ Prefab:
       value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 1391783177018186, guid: 017bd43e5ccb84edea6c387b44a40cb1, type: 2}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114205213687843838, guid: 017bd43e5ccb84edea6c387b44a40cb1,
-        type: 2}
-      propertyPath: outputPlan
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114660731454008096, guid: 017bd43e5ccb84edea6c387b44a40cb1,
-        type: 2}
-      propertyPath: initialHP
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 1391783177018186, guid: 017bd43e5ccb84edea6c387b44a40cb1, type: 2}
       propertyPath: m_Name
       value: TankGreen (1)
       objectReference: {fileID: 0}
@@ -4850,20 +4822,6 @@ Prefab:
     - target: {fileID: 4813320877673390, guid: 017bd43e5ccb84edea6c387b44a40cb1, type: 2}
       propertyPath: m_RootOrder
       value: 16
-      objectReference: {fileID: 0}
-    - target: {fileID: 1391783177018186, guid: 017bd43e5ccb84edea6c387b44a40cb1, type: 2}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114205213687843838, guid: 017bd43e5ccb84edea6c387b44a40cb1,
-        type: 2}
-      propertyPath: outputPlan
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114660731454008096, guid: 017bd43e5ccb84edea6c387b44a40cb1,
-        type: 2}
-      propertyPath: initialHP
-      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 017bd43e5ccb84edea6c387b44a40cb1, type: 2}
