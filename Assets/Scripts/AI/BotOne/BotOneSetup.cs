@@ -12,24 +12,25 @@ namespace Game.AI.BotOne
 	[RequireComponent(typeof(AIControl))]
 	public class BotOneSetup : MonoBehaviour
 	{
+		[Tooltip("Сценарий поведения бота и его цели.")]
+		public AntAIScenario scenario;
 		[Tooltip("Задержка между циклами обновления состояния мира и обдумывания нового плана.")]
 		public float updateInterval = 0.2f;
-		private AIControl _control;
 
 		private void Awake()
 		{
 			// Настраиваем ИИ.
-			_control = GetComponent<AIControl>();
-			_control.updateInterval = updateInterval;
+			var control = GetComponent<AIControl>();
+			control.updateInterval = updateInterval;
 			
 			// Обертка для всех «органов чувств».
-			_control.sense = new BotSense(gameObject);
+			control.sense = new BotSense(gameObject);
 
 			// Обертка для принятия решений (сценарий поведения).
-			_control.logic = new BotLogic(gameObject);
+			control.logic = new AntAILogic(scenario);
 
 			// Доступные наборы действий.
-			_control.tasks = new AntAITask[]
+			control.tasks = new AntAITask[]
 			{
 				new TaskIdle(gameObject),
 				new TaskSearchGun(gameObject),
@@ -46,7 +47,7 @@ namespace Game.AI.BotOne
 				new TaskDetonateBomb(gameObject)
 			};
 
-			_control.DefaultTaskIs("Idle");
+			control.DefaultTaskIs("Idle");
 		}
 	}
 }

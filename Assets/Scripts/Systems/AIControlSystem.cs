@@ -49,13 +49,13 @@ namespace Game.Systems
 						{
 							// Если текущая задача завершена или была прервана,
 							// то выбираем новую задачу и принудительно устанавливаем её.
-							ai.SetTask(ai.logic.SelectNewSchedule(ai.conditions), true);
+							ai.SetTask(ai.logic.SelectNewTask(ai.conditions), true);
 						}
 						else
 						{
 							// По ходу выполнения текущей задачи, обдумываем ситуацию
 							// и меняем задачу если она отличается от текущей.
-							ai.SetTask(ai.logic.SelectNewSchedule(ai.conditions));
+							ai.SetTask(ai.logic.SelectNewTask(ai.conditions));
 						}
 					}
 

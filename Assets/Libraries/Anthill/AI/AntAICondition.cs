@@ -33,7 +33,7 @@ namespace Anthill.AI
 
 		public bool Set(int aIndex, bool aValue)
 		{
-			if (aIndex > -1 && aIndex < AntAIPlanner.MAX_ATOMS)
+			if (aIndex >= 0 && aIndex < AntAIPlanner.MAX_ATOMS)
 			{
 				values[aIndex] = aValue;
 				mask[aIndex] = true;

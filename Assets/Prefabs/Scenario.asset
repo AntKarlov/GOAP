@@ -1,0 +1,248 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5bc4d2dd393314252af7c9601d4f3f2d, type: 3}
+  m_Name: Scenario
+  m_EditorClassIdentifier: 
+  condition:
+    list:
+    - id: 0
+      name: ArmedWithGun
+    - id: 1
+      name: ArmedWithBomb
+    - id: 2
+      name: HasAmmo
+    - id: 10
+      name: Injured
+    - id: 3
+      name: Alive
+    - id: 8
+      name: EnemyAlive
+    - id: 4
+      name: EnemyVisible
+    - id: 11
+      name: EnemyLinedUp
+    - id: 12
+      name: NearEnemy
+    - id: 5
+      name: BombInlineOfSight
+    - id: 6
+      name: GunInlineOfSight
+    - id: 7
+      name: AmmoInlineOfSight
+    - id: 9
+      name: HealInlineOfSight
+    serialId: 12
+  actions:
+  - name: ScoutWithGun
+    task: Scout
+    cost: 0
+    showSettings: 0
+    preConditions:
+    - id: 0
+      value: 1
+    - id: 2
+      value: 1
+    postConditions:
+    - id: 6
+      value: 1
+  - name: ScoutWithBomb
+    task: Scout
+    cost: 0
+    showSettings: 0
+    preConditions:
+    - id: 1
+      value: 1
+    postConditions:
+    - id: 6
+      value: 1
+  - name: PickupBomb
+    task: PickupBomb
+    cost: 0
+    showSettings: 0
+    preConditions:
+    - id: 9
+      value: 1
+    - id: 0
+      value: 0
+    - id: 1
+      value: 0
+    postConditions:
+    - id: 1
+      value: 1
+    - id: 9
+      value: 0
+  - name: PickupBombWithGun
+    task: PickupBomb
+    cost: 0
+    showSettings: 0
+    preConditions:
+    - id: 9
+      value: 1
+    - id: 11
+      value: 0
+    - id: 0
+      value: 1
+    - id: 2
+      value: 0
+    postConditions:
+    - id: 0
+      value: 0
+    - id: 1
+      value: 1
+    - id: 9
+      value: 0
+  - name: SearchGun
+    task: SearchGun
+    cost: 1
+    showSettings: 0
+    preConditions:
+    - id: 0
+      value: 0
+    - id: 1
+      value: 0
+    - id: 9
+      value: 0
+    postConditions:
+    - id: 10
+      value: 1
+  - name: PickupGun
+    task: PickupGun
+    cost: 0
+    showSettings: 0
+    preConditions:
+    - id: 0
+      value: 0
+    - id: 10
+      value: 1
+    postConditions:
+    - id: 0
+      value: 1
+    - id: 10
+      value: 0
+  - name: SearchAmmo
+    task: SearchAmmo
+    cost: 2
+    showSettings: 0
+    preConditions:
+    - id: 0
+      value: 1
+    - id: 2
+      value: 0
+    postConditions:
+    - id: 11
+      value: 1
+  - name: PickupAmmo
+    task: PickupAmmo
+    cost: 0
+    showSettings: 0
+    preConditions:
+    - id: 0
+      value: 1
+    - id: 2
+      value: 0
+    - id: 11
+      value: 1
+    postConditions:
+    - id: 2
+      value: 1
+    - id: 11
+      value: 0
+  - name: Approach
+    task: Approach
+    cost: 0
+    showSettings: 0
+    preConditions:
+    - id: 6
+      value: 1
+    - id: 1
+      value: 1
+    postConditions:
+    - id: 8
+      value: 1
+  - name: Aim
+    task: Aim
+    cost: 1
+    showSettings: 0
+    preConditions:
+    - id: 6
+      value: 1
+    - id: 0
+      value: 1
+    - id: 2
+      value: 1
+    postConditions:
+    - id: 7
+      value: 1
+  - name: Shot
+    task: Shot
+    cost: 1
+    showSettings: 0
+    preConditions:
+    - id: 2
+      value: 1
+    - id: 7
+      value: 1
+    postConditions:
+    - id: 5
+      value: 0
+    - id: 6
+      value: 0
+    - id: 7
+      value: 0
+  - name: DetonateBomb
+    task: DetonateBomb
+    cost: 3
+    showSettings: 0
+    preConditions:
+    - id: 1
+      value: 1
+    - id: 8
+      value: 1
+    postConditions:
+    - id: 5
+      value: 0
+    - id: 4
+      value: 0
+    - id: 1
+      value: 0
+    - id: 3
+      value: 0
+  - name: SearchHeal
+    task: SearchHeal
+    cost: 4
+    showSettings: 0
+    preConditions:
+    - id: 3
+      value: 1
+    - id: 6
+      value: 0
+    postConditions:
+    - id: 12
+      value: 1
+  - name: PickupHeal
+    task: PickupHeal
+    cost: 0
+    showSettings: 0
+    preConditions:
+    - id: 3
+      value: 1
+    - id: 12
+      value: 1
+    postConditions:
+    - id: 3
+      value: 0
+    - id: 12
+      value: 0
+  goals:
+  - id: 5
+    value: 0
+  - id: 3
+    value: 0

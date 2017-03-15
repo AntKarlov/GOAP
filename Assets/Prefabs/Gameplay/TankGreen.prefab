@@ -233,6 +233,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cf35934850f14e18b3e6e4d70551c9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scenario: {fileID: 11400000, guid: 6c167f426346847fa94a377fe73f389b, type: 2}
   updateInterval: 0.2
 --- !u!114 &114660731454008096
 MonoBehaviour:
