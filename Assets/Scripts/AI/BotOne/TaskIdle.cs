@@ -7,26 +7,26 @@ namespace Game.AI.BotOne
 	/// <summary>
 	/// Набор задач для состояния IDLE.
 	/// </summary>
-	public class ScheduleIdle : AntAISchedule
+	public class TaskIdle : AntAITask
 	{
 		private float _delay;
 
-		public ScheduleIdle() : base("Idle", true)
+		public TaskIdle(GameObject aObject) : base("Idle")
 		{
-			AddTask(OnUpdate);
+			// ..
 		}
 
-		public override void Start(GameObject aOwner)
+		public override void Start()
 		{
 			// Задаем случайный промежуток времени.
 			_delay = AntMath.RandomRangeFloat(2.0f, 5.0f);
 		}
 
-		private bool OnUpdate()
+		public override void Update(float aDeltaTime)
 		{
 			// Если время истекло, то задача выполнена.
-			_delay -= Time.deltaTime;
-			return (_delay < 0.0f);
+			_delay -= aDeltaTime;
+			_isFinished = (_delay < 0.0f);
 		}
 	}
 }

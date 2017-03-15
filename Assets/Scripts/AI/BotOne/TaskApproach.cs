@@ -1,3 +1,4 @@
+using UnityEngine;
 using Game.Map;
 
 namespace Game.AI.BotOne
@@ -5,16 +6,16 @@ namespace Game.AI.BotOne
 	/// <summary>
 	/// Набор действий для приближения к врагу.
 	/// </summary>
-	public class ScheduleApproach : ScheduleMove
+	public class TaskApproach : TaskMove
 	{
-		public ScheduleApproach() : base("Approach")
+		public TaskApproach(GameObject aObject) : base(aObject, "Approach")
 		{
-			AddTask(OnFindPath);
-			AddTask(OnMove);
+			// ..
 		}
 
-		private bool OnFindPath()
+		public override void Start()
 		{
+			base.Start();
 			WayPoint target = WayMap.Current.GetRandomPoint();
 
 			// Извлекаем из памяти последнее положение врага.
@@ -27,7 +28,11 @@ namespace Game.AI.BotOne
 			
 			// Строим маршрут.
 			BuildWay(WayMap.Current.FindNearestPoint(_control.Position), target);
-			return true;
+		}
+
+		public override void Update(float aDeltaTime)
+		{
+			_isFinished = OnMove();
 		}
 	}
 }

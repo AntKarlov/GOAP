@@ -29,22 +29,24 @@ namespace Game.AI.BotOne
 			_control.logic = new BotLogic(gameObject);
 
 			// Доступные наборы действий.
-			_control.schedules = new AntAISchedule[]
+			_control.tasks = new AntAITask[]
 			{
-				new ScheduleIdle(),
-				new ScheduleSearchGun(),
-				new SchedulePickupGun(),
-				new ScheduleSearchAmmo(),
-				new SchedulePickupAmmo(),
-				new SchedulePickupBomb(),
-				new ScheduleSearchHeal(),
-				new SchedulePickupHeal(),
-				new ScheduleScout(),
-				new ScheduleAim(),
-				new ScheduleShot(),
-				new ScheduleApproach(),
-				new ScheduleDetonateBomb()
+				new TaskIdle(gameObject),
+				new TaskSearchGun(gameObject),
+				new TaskPickupGun(gameObject),
+				new TaskSearchAmmo(gameObject),
+				new TaskPickupAmmo(gameObject),
+				new TaskPickupBomb(gameObject),
+				new TaskSearchHeal(gameObject),
+				new TaskPickupHeal(gameObject),
+				new TaskScout(gameObject),
+				new TaskAim(gameObject),
+				new TaskShot(gameObject),
+				new TaskApproach(gameObject),
+				new TaskDetonateBomb(gameObject)
 			};
+
+			_control.DefaultTaskIs("Idle");
 		}
 	}
 }

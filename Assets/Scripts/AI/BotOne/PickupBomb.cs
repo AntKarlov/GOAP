@@ -7,30 +7,16 @@ namespace Game.AI.BotOne
 	/// <summary>
 	/// Набор действий для подбора патронов.
 	/// </summary>
-	public class SchedulePickupBomb : ScheduleMove
+	public class TaskPickupBomb : TaskMove
 	{
-		public SchedulePickupBomb() : base("PickupBomb")
+		public TaskPickupBomb(GameObject aObject) : base(aObject, "PickupBomb")
 		{
-			AddTask(OnFindPath);
-			AddTask(OnMove);
+			//..
 		}
 
-		public override void Start(GameObject aObject)
+		public override void Start()
 		{
-			base.Start(aObject);
-			// Включаем магнит.
-			_magnet.magnetKind = ItemKind.Bomb;
-		}
-
-		public override void Stop(GameObject aObject)
-		{
-			base.Stop(aObject);
-			// Выключаем магнит.
-			_magnet.magnetKind = ItemKind.None;
-		}
-
-		private bool OnFindPath()
-		{
+			base.Start();
 			WayPoint target = WayMap.Current.GetRandomPoint();
 
 			// Бежим к бомбе!
@@ -43,7 +29,21 @@ namespace Game.AI.BotOne
 			
 			// Строим маршрут.
 			BuildWay(WayMap.Current.FindNearestPoint(_control.Position), target);
-			return true;
+			
+			// Включаем магнит.
+			_magnet.magnetKind = ItemKind.Bomb;
+		}
+
+		public override void Update(float aDeltaTime)
+		{
+			OnMove();
+		}
+
+		public override void Stop()
+		{
+			base.Stop();
+			// Выключаем магнит.
+			_magnet.magnetKind = ItemKind.None;
 		}
 	}
 }

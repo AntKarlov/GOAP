@@ -13,7 +13,7 @@ namespace Game.AI.BotOne
 	/// то базовым классом для всех наборов действий (schedules) бота служит данный класс,
 	/// в котором реализованы задачи для перемещения.
 	/// </summary>
-	public class ScheduleMove : AntAISchedule
+	public class TaskMove : AntAITask
 	{
 		protected TankControl _control;
 		protected Backboard _backboard;
@@ -26,22 +26,20 @@ namespace Game.AI.BotOne
 		protected float _updateAngleInterval;
 		protected Vector2 _nextPoint;
 
-		public ScheduleMove(string aScheduleName) : base(aScheduleName)
-		{
-			// (!) Список задач и прерывателей формируется в наборах действий
-			//     унаследованных от этого класса.
-		}
-
-		public override void Start(GameObject aObject)
+		public TaskMove(GameObject aObject, string aScheduleName) : base(aScheduleName)
 		{
 			_control = aObject.GetComponent<TankControl>();
 			_backboard = aObject.GetComponent<Backboard>();
 			_magnet = aObject.GetComponent<Magnet>();
+		}
+
+		public override void Start()
+		{
 			_wayIndex = 0;
 			_isWayFinished = false;
 		}
 
-		public override void Stop(GameObject aObject)
+		public override void Stop()
 		{
 			// Сброс управления.
 			_control.isForward = false;

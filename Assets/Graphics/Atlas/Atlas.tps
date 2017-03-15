@@ -223,6 +223,7 @@
             <key type="filename">BombItem/05.png</key>
             <key type="filename">BombItem/06.png</key>
             <key type="filename">BombItem/07.png</key>
+            <key type="filename">BombTower/01.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -261,6 +262,49 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">Ground/01.png</key>
+            <key type="filename">TankB1/01.png</key>
+            <key type="filename">TankB1/02.png</key>
+            <key type="filename">TankB1/03.png</key>
+            <key type="filename">TankB1/04.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>16,16,32,32</rect>
+                <key>scale9Paddings</key>
+                <rect>16,16,32,32</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">Ground/02.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>50,40,100,79</rect>
+                <key>scale9Paddings</key>
+                <rect>50,40,100,79</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">Ground/03.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>33,30,66,60</rect>
+                <key>scale9Paddings</key>
+                <rect>33,30,66,60</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">GunItem/01.png</key>
             <key type="filename">GunItem/02.png</key>
             <key type="filename">GunItem/03.png</key>
@@ -277,6 +321,22 @@
                 <rect>65,65,131,131</rect>
                 <key>scale9Paddings</key>
                 <rect>65,65,131,131</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">GunTower/01.png</key>
+            <key type="filename">GunTower/02.png</key>
+            <key type="filename">GunTower/03.png</key>
+            <key type="filename">GunTower/04.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>22,17,43,35</rect>
+                <key>scale9Paddings</key>
+                <rect>22,17,43,35</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
@@ -338,22 +398,6 @@
                 <rect>39,42,78,84</rect>
                 <key>scale9Paddings</key>
                 <rect>39,42,78,84</rect>
-                <key>scale9FromFile</key>
-                <false/>
-            </struct>
-            <key type="filename">TankB1/01.png</key>
-            <key type="filename">TankB1/02.png</key>
-            <key type="filename">TankB1/03.png</key>
-            <key type="filename">TankB1/04.png</key>
-            <struct type="IndividualSpriteSettings">
-                <key>pivotPoint</key>
-                <point_f>0.5,0.5</point_f>
-                <key>scale9Enabled</key>
-                <false/>
-                <key>scale9Borders</key>
-                <rect>16,16,32,32</rect>
-                <key>scale9Paddings</key>
-                <rect>16,16,32,32</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>

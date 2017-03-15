@@ -7,30 +7,16 @@ namespace Game.AI.BotOne
 	/// <summary>
 	/// Набор действий для подбора лечилки.
 	/// </summary>
-	public class SchedulePickupHeal : ScheduleMove
+	public class TaskPickupHeal : TaskMove
 	{
-		public SchedulePickupHeal() : base("PickupHeal")
+		public TaskPickupHeal(GameObject aObject) : base(aObject, "PickupHeal")
 		{
-			AddTask(OnFindPath);
-			AddTask(OnMove);
+			// ..
 		}
 
-		public override void Start(GameObject aObject)
+		public override void Start()
 		{
-			base.Start(aObject);
-			// Включаем магнит.
-			_magnet.magnetKind = ItemKind.Heal;
-		}
-
-		public override void Stop(GameObject aObject)
-		{
-			base.Stop(aObject);
-			// Выключаем магнит.
-			_magnet.magnetKind = ItemKind.None;
-		}
-
-		private bool OnFindPath()
-		{
+			base.Start();
 			WayPoint target = WayMap.Current.GetRandomPoint();
 
 			// Бежим к лечилке!
@@ -43,7 +29,21 @@ namespace Game.AI.BotOne
 			
 			// Строим маршрут.
 			BuildWay(WayMap.Current.FindNearestPoint(_control.Position), target);
-			return true;
+
+			// Включаем магнит.
+			_magnet.magnetKind = ItemKind.Heal;
+		}
+
+		public override void Update(float aDeltaTime)
+		{
+			_isFinished = OnMove();
+		}
+
+		public override void Stop()
+		{
+			base.Stop();
+			// Выключаем магнит.
+			_magnet.magnetKind = ItemKind.None;
 		}
 	}
 }

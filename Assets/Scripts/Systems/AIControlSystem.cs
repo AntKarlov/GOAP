@@ -38,46 +38,32 @@ namespace Game.Systems
 						ai.sense.GetConditions(ai.logic, ai.conditions);
 					}
 
-					if (ai.currentSchedule == null)
+					if (ai.currentTask == null)
 					{
-						// Если текущего набора действий нет, то ставим набор действий по умолчанию.
-						ai.SetDefaultSchedule();
+						// Если текущей задачи нет, то ставим задачу по умолчанию.
+						ai.SetDefaultTask();
 					}
 					else
 					{
-						if (ai.currentSchedule.IsFinished(ai.logic, ai.conditions))
+						if (ai.currentTask.IsFinished(ai.logic, ai.conditions))
 						{
-							// Если текущий набор действий завершен или был прерван,
-							// то выбираем новый набор действий и принудительно устанавливаем его.
-							ai.SetSchedule(ai.logic.SelectNewSchedule(ai.conditions), true);
+							// Если текущая задача завершена или была прервана,
+							// то выбираем новую задачу и принудительно устанавливаем её.
+							ai.SetTask(ai.logic.SelectNewSchedule(ai.conditions), true);
 						}
 						else
 						{
-							// По ходу выполнения текущего набора действий, обдумываем ситуацию
-							// и меняем набор действий только если он будет отличаться от уже текущего.
-							ai.SetSchedule(ai.logic.SelectNewSchedule(ai.conditions));
+							// По ходу выполнения текущей задачи, обдумываем ситуацию
+							// и меняем задачу если она отличается от текущей.
+							ai.SetTask(ai.logic.SelectNewSchedule(ai.conditions));
 						}
 					}
 
-					/* Старый код обработки игровой логики.
-					if (ai.currentSchedule == null)
-					{
-						// Если текущего набора действий нет, ставим тот что по дефолту.
-						ai.SetDefaultSchedule();
-					}
-					else if (ai.currentSchedule.IsFinished(ai.logic, ai.conditions))
-					{
-						// Если текущий набор действий завершил свою работу или был прерван,
-						// выбираем новый набор действий на основе текущего состояния игрового мира.
-						ai.SetSchedule(ai.logic.SelectNewSchedule(ai.conditions));
-					}
-					//*/
-
-					ai.currentTime = _aiNodes[i].AIControl.updateInterval;
+					ai.currentTime = ai.updateInterval;
 				}
 
-				// Обновляем текущий набор действий независимо от всего остального.
-				ai.currentSchedule.Update();
+				// Обновляем текущуюу задачу независимо от всего остального.
+				ai.currentTask.Update(aDeltaTime);
 			}
 		}
 	}

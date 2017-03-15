@@ -1,3 +1,4 @@
+using UnityEngine;
 using Game.Map;
 
 namespace Game.AI.BotOne
@@ -5,17 +6,16 @@ namespace Game.AI.BotOne
 	/// <summary>
 	/// Набор действий для поиска патронов.
 	/// </summary>
-	public class ScheduleSearchHeal : ScheduleMove
+	public class TaskSearchHeal : TaskMove
 	{
-		public ScheduleSearchHeal() : base("SearchHeal")
+		public TaskSearchHeal(GameObject aObject) : base(aObject, "SearchHeal")
 		{
-			AddTask(OnFindPath);
-			AddTask(OnMove);
 			AddInterrupt("HasObstacle");
 		}
 
-		private bool OnFindPath()
+		public override void Start()
 		{
+			base.Start();
 			WayPoint target = WayMap.Current.GetRandomPoint();
 
 			// Проверяем в памяти, может ранее доводилось видеть патроны!?
@@ -28,7 +28,11 @@ namespace Game.AI.BotOne
 			
 			// Строим маршрут.
 			BuildWay(WayMap.Current.FindNearestPoint(_control.Position), target);
-			return true;
+		}
+
+		public override void Update(float aDeltaTime)
+		{
+			_isFinished = OnMove();
 		}
 	}
 }

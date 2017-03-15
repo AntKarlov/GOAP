@@ -1,68 +1,68 @@
-using System;
+using System.Collections.Generic;
 
 namespace Anthill.AI
 {
 	public class AntAITask
 	{
-		public bool isFinished;
-		private Func<bool> _func;
+		public string name;
 
-		public AntAITask()
+		protected List<string> _interruptions;
+		protected bool _isFinished;
+
+		public AntAITask(string aName)
 		{
-			isFinished = false;
+			name = aName;
+			_interruptions = new List<string>();
+			_isFinished = false;
 		}
 
-		public void SetFunc(Func<bool> aFunction)
+		public void AddInterrupt(string aConditionName)
 		{
-			_func = aFunction;
+			_interruptions.Add(aConditionName);
 		}
 
-		public virtual void Update()
+		public virtual void Start()
 		{
-			isFinished = _func();
-		}
-	}
-
-	public class AntAITask<T1> : AntAITask
-	{
-		private Func<T1, bool> _func;
-		protected T1 _arg1;
-
-		public void SetFunc(Func<T1, bool> aFunction)
-		{
-			_func = aFunction;
+			// Вызывается перед началом выполнения задачи.
 		}
 
-		public void SetArg(T1 aArg1)
+		public virtual void Update(float aDeltaTime)
 		{
-			_arg1 = aArg1;
+			// Вызывается каждый игровой цикл пока задача активна.
 		}
 
-		public override void Update()
+		public virtual void Stop()
 		{
-			isFinished = _func(_arg1);
-		}
-	}
-
-	public class AntAITask<T1, T2> : AntAITask<T1>
-	{
-		private Func<T1, T2, bool> _func;
-		protected T2 _arg2;
-
-		public void SetFunc(Func<T1, T2, bool> aFunction)
-		{
-			_func = aFunction;
+			// Вызывается после завершения выполнения задачи (даже если задача была прервана).
 		}
 
-		public void SetArg(T1 aArg1, T2 aArg2)
+		public virtual void Reset()
 		{
-			_arg1 = aArg1;
-			_arg2 = aArg2;
+			_isFinished = false;
 		}
 
-		public override void Update()
+		public bool IsFinished(ILogic aLogic, AntAICondition aConditions)
 		{
-			isFinished = _func(_arg1, _arg2);
+			if (_isFinished || OverlapInterrupts(aLogic.Planner, aConditions))
+			{
+				Reset();
+				return true;
+			}
+			return false;
+		}
+
+		public bool OverlapInterrupts(AntAIPlanner aPlanner, AntAICondition aConditions)
+		{
+			int index = -1;
+			for (int i = 0, n = _interruptions.Count; i < n; i++)
+			{
+				index = aPlanner.GetAtomIndex(_interruptions[i]);
+				if (aConditions.GetValue(index))
+				{
+					return true;
+				}
+			}
+			return false;
 		}
 	}
 }

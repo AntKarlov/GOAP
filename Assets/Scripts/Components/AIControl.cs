@@ -11,8 +11,9 @@ namespace Game.Components
 
 		[NonSerializedAttribute] public ISense sense;
 		[NonSerializedAttribute] public ILogic logic;
-		[NonSerializedAttribute] public AntAISchedule[] schedules;
-		[NonSerializedAttribute] public AntAISchedule currentSchedule;
+		[NonSerializedAttribute] public AntAITask[] tasks;
+		[NonSerializedAttribute] public AntAITask currentTask;
+		[NonSerializedAttribute] public AntAITask defaultTask;
 		[NonSerializedAttribute] public AntAICondition conditions;
 		[NonSerializedAttribute] public float updateInterval;
 		[NonSerializedAttribute] public float currentTime;
@@ -25,7 +26,7 @@ namespace Game.Components
 		private void Awake()
 		{
 			conditions = new AntAICondition();
-			currentSchedule = null;
+			currentTask = null;
 			currentTime = 0.0f;
 			active = true;
 		}
@@ -34,51 +35,61 @@ namespace Game.Components
 		// Public Methods
 		// -----------------------------------------------------
 
-		public void SetDefaultSchedule()
+		public void DefaultTaskIs(string aTaskName)
 		{
-			if (currentSchedule != null)
+			defaultTask = FindTask(aTaskName);
+			if (defaultTask == null)
 			{
-				currentSchedule.Stop(gameObject);
+				Debug.LogWarning("[AIControl] Can't set \"" + aTaskName + "\" as default task because it is not existing!");
+			}
+		}
+
+		public void SetDefaultTask()
+		{
+			if (currentTask != null)
+			{
+				currentTask.Stop();
 			}
 
-			for (int i = 0, n = schedules.Length; i < n; i++)
+			if (defaultTask != null)
 			{
-				if (schedules[i].isDefault)
-				{
-					currentSchedule = schedules[i];
-					currentSchedule.Reset();
-					currentSchedule.Start(gameObject);
-				}
+				currentTask = defaultTask;
+				currentTask.Reset();
+				currentTask.Start();
+			}
+			else
+			{
+				Debug.LogWarning("[AIControl] Default task is not defined!");
 			}
 		}
 		
-		public void SetSchedule(string aScheduleName, bool aForce = false)
+		public void SetTask(string aTaskName, bool aForce = false)
 		{
-			if (aForce || !string.Equals(currentSchedule.name, aScheduleName))
+			if (aForce || !string.Equals(currentTask.name, aTaskName))
 			{
-				if (currentSchedule != null)
+				if (currentTask != null)
 				{
-					currentSchedule.Stop(gameObject);
+					currentTask.Stop();
 				}
 
-				currentSchedule = FindSchedule(aScheduleName);
-				if (currentSchedule != null)
+				currentTask = FindTask(aTaskName);
+				if (currentTask != null)
 				{
-					currentSchedule.Reset();
-					currentSchedule.Start(gameObject);
+					currentTask.Reset();
+					currentTask.Start();
 				}
 				else
 				{
-					Debug.LogWarning("Can't find \"" + aScheduleName + "\" schedule.");
-					SetDefaultSchedule();
+					Debug.LogWarning("[AIControl] Can't find \"" + aTaskName + "\" task.");
+					SetDefaultTask();
 				}
 			}
 		}
 
-		public AntAISchedule FindSchedule(string aScheduleName)
+		public AntAITask FindTask(string aScheduleName)
 		{
-			int index = Array.FindIndex(schedules, x => string.Equals(x.name, aScheduleName));
-			return (index >= 0 && index < schedules.Length) ? schedules[index] : null;
+			int index = Array.FindIndex(tasks, x => string.Equals(x.name, aScheduleName));
+			return (index >= 0 && index < tasks.Length) ? tasks[index] : null;
 		}
 	}
 }

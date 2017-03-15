@@ -8,45 +8,30 @@ namespace Game.AI.BotOne
 	/// <summary>
 	/// Набор действий для прицеливания.
 	/// </summary>
-	public class ScheduleAim : AntAISchedule
+	public class TaskAim : AntAITask
 	{
 		private TankControl _control;
 		private Backboard _backboard;
 		private float _targetAngle;
 
-		public ScheduleAim() : base("Aim")
-		{
-			AddTask(OnFindTarget);
-			AddTask(OnAim);
-		}
-
-		public override void Start(GameObject aObject)
+		public TaskAim(GameObject aObject) : base("Aim")
 		{
 			_control = aObject.GetComponent<TankControl>();
 			_backboard = aObject.GetComponent<Backboard>();
-		}
-
-		public override void Stop(GameObject aObject)
-		{
-			_control.isTowerLeft = false;
-			_control.isTowerRight = false;
-		}
-
-		private bool OnFindTarget()
-		{
 			_targetAngle = 0.0f;
+		}
 
+		public override void Start()
+		{
 			// Считываем из памяти информацию о положении врага.
 			BackboardData data = _backboard.Find("EnemyVisible");
 			if (data.isValid)
 			{
 				_targetAngle = AntMath.AngleDeg((Vector2) _control.Position, data.position);
 			}
-
-			return true;
 		}
 
-		private bool OnAim()
+		public override void Update(float aDeltaTime)
 		{
 			// Процесс наведения на цель.
 			if (!AntMath.Equal(AntMath.Angle(_control.Tower.Angle), AntMath.Angle(_targetAngle), 1.0f))
@@ -81,7 +66,12 @@ namespace Game.AI.BotOne
 				_control.isTowerLeft = false;
 				_control.isTowerRight = false;
 			}
-			return false;
+		}
+
+		public override void Stop()
+		{
+			_control.isTowerLeft = false;
+			_control.isTowerRight = false;
 		}
 	}
 }

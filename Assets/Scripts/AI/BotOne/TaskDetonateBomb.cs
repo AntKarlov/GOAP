@@ -7,24 +7,18 @@ namespace Game.AI.BotOne
 	/// <summary>
 	/// Набор действий для активации бомбы.
 	/// </summary>
-	public class ScheduleDetonateBomb : AntAISchedule
+	public class TaskDetonateBomb : AntAITask
 	{
 		private TankControl _control;
 
-		public ScheduleDetonateBomb() : base("DetonateBomb")
-		{
-			AddTask(OnDetonate);
-		}
-
-		public override void Start(GameObject aObject)
+		public TaskDetonateBomb(GameObject aObject) : base("DetonateBomb")
 		{
 			_control = aObject.GetComponent<TankControl>();
 		}
 
-		private bool OnDetonate()
+		public override void Start()
 		{
 			_control.isFire = true;
-			return true;
 		}
 	}
 }

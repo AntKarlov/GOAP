@@ -7,33 +7,26 @@ namespace Game.AI.BotOne
 	/// <summary>
 	/// Набор действий для стрельбы.
 	/// </summary>
-	public class ScheduleShot : AntAISchedule
+	public class TaskShot : AntAITask
 	{
 		private TankControl _control;
 		private float _delay;
 
-		public ScheduleShot() : base("Shot")
-		{
-			AddTask(OnShot);
-			AddTask(OnDelay);
-		}
-
-		public override void Start(GameObject aObject)
+		public TaskShot(GameObject aObject) : base("Shot")
 		{
 			_control = aObject.GetComponent<TankControl>();
+		}
+
+		public override void Start()
+		{
+			_control.isFire = true;
 			_delay = 0.3f;
 		}
 
-		private bool OnShot()
+		public override void Update(float aDeltaTime)
 		{
-			_control.isFire = true;
-			return true;
-		}
-
-		private bool OnDelay()
-		{
-			_delay -= Time.deltaTime;
-			return (_delay <= 0.0f);
+			_delay -= aDeltaTime;
+			_isFinished = (_delay <= 0.0f);
 		}
 	}
 }
