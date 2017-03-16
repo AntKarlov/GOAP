@@ -42,8 +42,8 @@ GameObject:
   - component: {fileID: 58931223639116310}
   - component: {fileID: 50372528789359120}
   - component: {fileID: 114860730490154266}
-  - component: {fileID: 114357050129430820}
   - component: {fileID: 114807710280039374}
+  - component: {fileID: 114865201467502340}
   - component: {fileID: 114363706061471122}
   - component: {fileID: 114420998744775376}
   - component: {fileID: 114391000336603156}
@@ -145,19 +145,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa07b4712b18c46d584b711db13a7b10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &114357050129430820
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1442153784927384}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5cf35934850f14e18b3e6e4d70551c9e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  scenario: {fileID: 11400000, guid: 6c167f426346847fa94a377fe73f389b, type: 2}
-  updateInterval: 0.2
 --- !u!114 &114363706061471122
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -169,7 +156,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a10c9164457f1443eb68fa1c22addac5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  outputPlan: 0
 --- !u!114 &114391000336603156
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -337,6 +323,19 @@ MonoBehaviour:
   reverse: 0
   loop: 1
   loopDelay: 0
+--- !u!114 &114865201467502340
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1442153784927384}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e90e8a32df7c94ea8ae6acca6db4f109, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scenario: {fileID: 11400000, guid: 6c167f426346847fa94a377fe73f389b, type: 2}
+  updateInterval: 0.2
 --- !u!212 &212239335225192694
 SpriteRenderer:
   m_ObjectHideFlags: 1

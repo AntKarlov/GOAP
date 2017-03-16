@@ -7,23 +7,23 @@ namespace Anthill.AI
 
 		public AntAICondition()
 		{
-			Clear();
+			values = new bool[AntAIPlanner.MAX_ATOMS];
+			mask = new bool[AntAIPlanner.MAX_ATOMS];
 		}
 
 		public void Clear()
 		{
-			values = new bool[AntAIPlanner.MAX_ATOMS];
-			mask = new bool[AntAIPlanner.MAX_ATOMS];
+			for (int i = 0, n = AntAIPlanner.MAX_ATOMS; i < n; i++)
+			{
+				values[i] = false;
+				mask[i] = false;
+			}
 		}
 
 		public bool Has(AntAIPlanner aPlanner, string aAtomName)
 		{
 			int index = aPlanner.GetAtomIndex(aAtomName);
-			if (index >= 0 && index < values.Length)
-			{
-				return values[index];
-			}
-			return false;
+			return (index >= 0 && index < values.Length) ? values[index] : false;
 		}
 
 		public bool Set(AntAIPlanner aPlanner, string aAtomName, bool aValue)
@@ -39,7 +39,6 @@ namespace Anthill.AI
 				mask[aIndex] = true;
 				return true;
 			}
-
 			return false;
 		}
 
@@ -53,7 +52,6 @@ namespace Anthill.AI
 					dist++;
 				}
 			}
-
 			return dist;
 		}
 
@@ -66,7 +64,6 @@ namespace Anthill.AI
 					return false;
 				}
 			}
-
 			return true;
 		}
 

@@ -241,6 +241,12 @@ MonoBehaviour:
       value: 0
     - id: 12
       value: 0
+  - name: <Unnamed>
+    task: <Unnamed>
+    cost: 0
+    showSettings: 1
+    preConditions: []
+    postConditions: []
   goals:
   - id: 5
     value: 0

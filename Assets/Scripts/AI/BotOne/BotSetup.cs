@@ -10,7 +10,7 @@ namespace Game.AI.BotOne
 	/// этот класс как компонент к игровому объекту.
 	/// </summary>
 	[RequireComponent(typeof(AIControl))]
-	public class BotOneSetup : MonoBehaviour
+	public class BotSetup : MonoBehaviour
 	{
 		[Tooltip("Сценарий поведения бота и его цели.")]
 		public AntAIScenario scenario;

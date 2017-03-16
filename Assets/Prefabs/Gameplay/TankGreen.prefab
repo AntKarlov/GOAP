@@ -24,8 +24,8 @@ GameObject:
   - component: {fileID: 58139860392148844}
   - component: {fileID: 50993897534753470}
   - component: {fileID: 114970453954144530}
-  - component: {fileID: 114550492229170806}
   - component: {fileID: 114285882274266102}
+  - component: {fileID: 114542453063952540}
   - component: {fileID: 114205213687843838}
   - component: {fileID: 114857956995027602}
   - component: {fileID: 114402149833473316}
@@ -171,7 +171,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a10c9164457f1443eb68fa1c22addac5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  outputPlan: 0
 --- !u!114 &114218470013338932
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -222,7 +221,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   conditionName: EnemyVisible
   group: 2
---- !u!114 &114550492229170806
+--- !u!114 &114542453063952540
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -230,7 +229,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1391783177018186}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5cf35934850f14e18b3e6e4d70551c9e, type: 3}
+  m_Script: {fileID: 11500000, guid: e90e8a32df7c94ea8ae6acca6db4f109, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   scenario: {fileID: 11400000, guid: 6c167f426346847fa94a377fe73f389b, type: 2}

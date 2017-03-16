@@ -1,6 +1,5 @@
 using UnityEngine;
 using Anthill.AI;
-using System.Collections.Generic;
 
 namespace Scripts
 {
@@ -81,7 +80,8 @@ namespace Scripts
 
 		private void DoPlan(AntAICondition aCurrent, AntAICondition aGoal)
 		{
-			List<string> plan = planner.GetPlan(aCurrent, aGoal);
+			AntAIPlan plan = new AntAIPlan();
+			planner.MakePlan(ref plan, aCurrent, aGoal);
 			if (plan != null)
 			{
 				string p = string.Format("Plan: {0}\n", planner.NameIt(aCurrent.Description()));

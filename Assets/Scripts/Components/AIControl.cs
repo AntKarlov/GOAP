@@ -4,11 +4,8 @@ using Anthill.AI;
 
 namespace Game.Components
 {
-	public class AIControl : MonoBehaviour
+	public class AIControl : MonoBehaviour, IAIProvider
 	{
-		[Tooltip("Вкл. вывод плана составляемого ботом в консоль.")]
-		public bool outputPlan = false;
-
 		[NonSerializedAttribute] public ISense sense;
 		[NonSerializedAttribute] public ILogic logic;
 		[NonSerializedAttribute] public AntAITask[] tasks;
@@ -19,9 +16,7 @@ namespace Game.Components
 		[NonSerializedAttribute] public float currentTime;
 		[NonSerializedAttribute] public bool active;
 
-		// -----------------------------------------------------
-		// Unity Callbacks
-		// -----------------------------------------------------
+		#region Unity Callbacks
 
 		private void Awake()
 		{
@@ -31,9 +26,8 @@ namespace Game.Components
 			active = true;
 		}
 
-		// -----------------------------------------------------
-		// Public Methods
-		// -----------------------------------------------------
+		#endregion
+		#region Public Methods
 
 		public void DefaultTaskIs(string aTaskName)
 		{
@@ -91,5 +85,30 @@ namespace Game.Components
 			int index = Array.FindIndex(tasks, x => string.Equals(x.name, aScheduleName));
 			return (index >= 0 && index < tasks.Length) ? tasks[index] : null;
 		}
+
+		#endregion
+		#region IAIProvider Implementation
+
+		public AntAITask[] Tasks
+		{
+			get { return tasks; }
+		}
+
+		public AntAITask DefaultTask
+		{
+			get { return defaultTask; }
+		}
+
+		public ILogic Logic
+		{
+			get { return logic; }
+		}
+
+		public ISense Sense
+		{
+			get { return sense; }
+		}
+
+		#endregion
 	}
 }
