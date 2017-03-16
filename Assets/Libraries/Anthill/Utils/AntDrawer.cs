@@ -1,24 +1,39 @@
+using System.Reflection;
+using UnityEngine;
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
-using UnityEngine;
 
 namespace Anthill.Utils
 {
 	public class AntDrawer
 	{
 		private static bool _useHandles = false;
+		private static Texture2D _aaLineTexture = null;
+		private static Texture2D _lineTexture = null;
+		private static Material _blitMaterial = null;
+		private static Material _blendMaterial = null;
+		private static Rect _lineRect = new Rect(0, 0, 1, 1);
+		private static Matrix4x4 _matrixBackup;
 
 		public static void BeginHandles(Matrix4x4 aMatrix)
 		{
 			_useHandles = true;
 			#if UNITY_EDITOR
+			_matrixBackup = Handles.matrix;
 			Handles.matrix = aMatrix;
 			#endif
 		}
 
 		public static void EndHandles()
 		{
+			#if UNITY_EDITOR
+			if (_useHandles)
+			{
+				Handles.matrix = _matrixBackup;
+			}
+			#endif
 			_useHandles = false;
 		}
 
@@ -272,12 +287,12 @@ namespace Anthill.Utils
 		public static Vector2[] GetBezierCurve(Vector2[] aKeyPoints)
 		{
 			float length = 0f;
-			float step = 0.05f;
+			float step = 0.025f;
 			int n = aKeyPoints.Length;
 
 			int k = 0;
-			Vector2[] result = new Vector2[Mathf.RoundToInt(1f / step) + 1];
-			while (length <= 1f)
+			Vector2[] result = new Vector2[Mathf.RoundToInt(1.0f / step) + 1];
+			while (length <= 1.0f)
 			{
 				Vector2 point = new Vector2();
 				for (int i = 0; i < n; i++)
@@ -288,7 +303,7 @@ namespace Anthill.Utils
 				}
 
 				result[k++] = point;
-				length += 0.05f;
+				length += 0.025f;
 			}
 
 			result[result.Length - 1] = aKeyPoints[aKeyPoints.Length - 1];
@@ -304,5 +319,133 @@ namespace Anthill.Utils
 		{
 			return (aValue <= 1f) ? 1f : aValue * Factorial(aValue - 1f);
 		}
+
+		#region Solid Lines
+
+		public static void DrawSolidConnection(float aX1, float aY1, float aX2, float aY2, Color aColor,
+				int aDir = 1, float aTanOffset = 5.0f)
+		{
+			DrawSolidConnection(new Vector2(aX1, aY1), new Vector2(aX2, aY2), aColor, aDir, aTanOffset);
+		}
+
+		public static void DrawSolidConnection(Vector2 aStartPos, Vector2 aEndPos, Color aColor, 
+			int aDir = 1, float aTanOffset = 5.0f, float aWidth = 2.0f, bool aAntialias = true)
+		{
+			Vector2 startTan = (aDir == 1) ? aStartPos + Vector2.right * aTanOffset : aStartPos + Vector2.left * aTanOffset;
+			Vector2 endTan = (aDir == 1) ? aEndPos + Vector2.left * aTanOffset : aEndPos + Vector2.right * aTanOffset;
+			DrawSolidPath(GetBezierCurve(new Vector2[4] { aStartPos, startTan, endTan, aEndPos }), aColor, false, aWidth, aAntialias);
+		}
+
+		public static void DrawVerticalSolidConnection(Vector2 aStartPos, Vector2 aEndPos, Color aColor, 
+			int aDir = 1, float aTanOffset = 5.0f, float aWidth = 2.0f, bool aAntialias = true)
+		{
+			Vector2 startTan = (aDir == 1) ? aStartPos + Vector2.up * aTanOffset : aStartPos + Vector2.down * aTanOffset;
+			Vector2 endTan = (aDir == 1) ? aEndPos + Vector2.down * aTanOffset : aEndPos + Vector2.up * aTanOffset;
+			DrawSolidPath(GetBezierCurve(new Vector2[4] { aStartPos, startTan, endTan, aEndPos }), aColor, false, aWidth, aAntialias);
+		}
+
+		public static void DrawSolidPath(Vector2[] aPoints, Color aColor, bool aLoop = false, 
+			float aWidth = 2.0f, bool aAntialias = true)
+		{
+			if (aPoints.Length >= 2)
+			{
+				Vector2 actual = aPoints[0];
+				for (int i = 1; i < aPoints.Length; i++)
+				{
+					DrawSolidLine(actual, aPoints[i], aColor, aWidth, aAntialias);
+					actual = aPoints[i];
+				}
+
+				if (aLoop)
+				{
+					DrawSolidLine(actual, aPoints[0], aColor, aWidth, aAntialias);
+				}
+			}
+		}
+
+		public static void DrawSolidLine(Vector2 aPointA, Vector2 aPointB, Color aColor,
+			float aWidth = 2.0f, bool aAntialias = true)
+		{
+			#if UNITY_EDITOR
+			if (_lineTexture == null)
+			{
+				InitializeSolid();
+			}
+			#endif
+
+			// Note that theta = atan2(dy, dx) is the angle we want to rotate by, but instead
+        	// of calculating the angle we just use the sine (dy/len) and cosine (dx/len).
+			float dx = aPointB.x - aPointA.x;
+			float dy = aPointB.y - aPointA.y;
+			float len = Mathf.Sqrt(dx * dx + dy * dy);
+
+			// Early out on tiny lines to avoid divide by zero.
+        	// Plus what's the point of drawing a line 1/1000th of a pixel long??
+			if (len < 0.001f)
+			{
+				return;
+			}
+
+			// Pick texture and material (and tweak width) based on anti-alias setting.
+			Texture2D tex;
+			Material mat;
+			if (aAntialias)
+			{
+				// Multiplying by three is fine for anti-aliasing width-1 lines, but make a wide "fringe"
+            	// for thicker lines, which may or may not be desirable.
+				aWidth *= 3.0f;
+				tex = _aaLineTexture;
+				mat = _blendMaterial;
+			}
+			else
+			{
+				tex = _lineTexture;
+				mat = _blitMaterial;
+			}
+
+			float wdx = aWidth * dy / len;
+			float wdy = aWidth * dx / len;
+
+			var m = Matrix4x4.identity;
+			m.m00 = dx;
+			m.m01 = -wdx;
+			m.m03 = aPointA.x + 0.5f * wdx;
+			m.m10 = dy;
+			m.m11 = wdy;
+			m.m13 = aPointA.y - 0.5f * wdy;
+
+			// Use GL matrix and Graphics.DrawTexture rather than GUI.matrix and GUI.DrawTexture,
+        	// for better performance. (Setting GUI.matrix is slow, and GUI.DrawTexture is just a
+        	// wrapper on Graphics.DrawTexture.)
+			GL.PushMatrix();
+			GL.MultMatrix(m);
+			Graphics.DrawTexture(_lineRect, tex, _lineRect, 0, 0, 0, 0, aColor, mat);
+			GL.PopMatrix();
+		}
+
+		private static void InitializeSolid()
+		{
+			if (_lineTexture == null)
+			{
+				_lineTexture = new Texture2D(1, 1, TextureFormat.ARGB32, true);
+				_lineTexture.SetPixel(0, 1, Color.white);
+				_lineTexture.Apply();
+			}
+
+			if (_aaLineTexture == null)
+			{
+				_aaLineTexture = new Texture2D(1, 3, TextureFormat.ARGB32, true);
+				_aaLineTexture.SetPixel(0, 0, new Color(1.0f, 1.0f, 1.0f, 0.0f));
+				_aaLineTexture.SetPixel(0, 1, Color.white);
+				_aaLineTexture.SetPixel(0, 2, new Color(1.0f, 1.0f, 1.0f, 0.0f));
+				_aaLineTexture.Apply();
+			}
+
+			// GUI.blitMaterial and GUI.blendMaterial are used internally by GUI.DrawTexture,
+        	// depending on the alphaBlend parameter. Use reflection to "borrow" these references.
+			_blitMaterial = (Material) typeof(GUI).GetMethod("get_blitMaterial", BindingFlags.NonPublic | BindingFlags.Static).Invoke(null, null);
+			_blendMaterial = (Material)typeof(GUI).GetMethod("get_blendMaterial", BindingFlags.NonPublic | BindingFlags.Static).Invoke(null, null);
+		}
+		#endregion
 	}
 }
