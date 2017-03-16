@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using UnityEngine;
 using UnityEditor;
 
@@ -28,7 +27,7 @@ public class AntComponentReorder : EditorWindow
 	// Initialize Editor Window
 	// -----------------------------------------------------
 
-	[MenuItem("Anthill/Crafters/Component Reorder")]
+	[MenuItem("Anthill/Component Reorder")]
 	private static void ShowWindow()
 	{
 		AntComponentReorder window = (AntComponentReorder)EditorWindow.GetWindow(typeof(AntComponentReorder), false, "Component Reorder");
@@ -196,4 +195,3 @@ public class AntComponentReorder : EditorWindow
 		return Selection.activeTransform;
 	}
 }
-#endif
