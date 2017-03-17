@@ -12,7 +12,240 @@ MonoBehaviour:
   m_Name: Scenario
   m_EditorClassIdentifier: 
   conditions:
-    list: []
-    serialId: -1
-  actions: []
-  goals: []
+    list:
+    - id: 0
+      name: ArmedWithGun
+    - id: 3
+      name: ArmedWithBomb
+    - id: 4
+      name: BombInlineOfSight
+    - id: 5
+      name: GunInlineOfSight
+    - id: 6
+      name: AmmoInlineOfSight
+    - id: 10
+      name: HealInlineOfSight
+    - id: 12
+      name: EnemyLinedUp
+    - id: 2
+      name: EnemyVisible
+    - id: 7
+      name: EnemyAlive
+    - id: 11
+      name: NearEnemy
+    - id: 1
+      name: HasAmmo
+    - id: 8
+      name: Injured
+    - id: 9
+      name: Alive
+    serialId: 12
+  actions:
+  - name: ScoutWithGun
+    task: Scout
+    cost: 0
+    isOpened: 0
+    pre:
+    - id: 0
+      value: 1
+    - id: 1
+      value: 1
+    post:
+    - id: 2
+      value: 1
+  - name: ScoutWithBomb
+    task: Scout
+    cost: 0
+    isOpened: 0
+    pre:
+    - id: 3
+      value: 1
+    post:
+    - id: 2
+      value: 1
+  - name: PickupBomb
+    task: PickupBomb
+    cost: 0
+    isOpened: 0
+    pre:
+    - id: 4
+      value: 1
+    - id: 0
+      value: 0
+    - id: 3
+      value: 0
+    post:
+    - id: 3
+      value: 0
+    - id: 4
+      value: 0
+  - name: PickupBombWithGun
+    task: PickupBomb
+    cost: 0
+    isOpened: 0
+    pre:
+    - id: 4
+      value: 1
+    - id: 6
+      value: 0
+    - id: 0
+      value: 1
+    - id: 1
+      value: 0
+    post:
+    - id: 0
+      value: 0
+    - id: 3
+      value: 1
+    - id: 4
+      value: 0
+  - name: SearchGun
+    task: SearchGun
+    cost: 1
+    isOpened: 0
+    pre:
+    - id: 0
+      value: 0
+    - id: 3
+      value: 0
+    - id: 4
+      value: 0
+    post:
+    - id: 5
+      value: 1
+  - name: PickupGun
+    task: PickupGun
+    cost: 0
+    isOpened: 0
+    pre:
+    - id: 0
+      value: 0
+    - id: 5
+      value: 1
+    post:
+    - id: 0
+      value: 1
+    - id: 5
+      value: 0
+  - name: SearchAmmo
+    task: SearchAmmo
+    cost: 2
+    isOpened: 0
+    pre:
+    - id: 0
+      value: 1
+    - id: 1
+      value: 0
+    post:
+    - id: 6
+      value: 1
+  - name: PickupAmmo
+    task: PickupAmmo
+    cost: 0
+    isOpened: 0
+    pre:
+    - id: 0
+      value: 1
+    - id: 1
+      value: 0
+    - id: 6
+      value: 1
+    post:
+    - id: 1
+      value: 1
+    - id: 6
+      value: 0
+  - name: Approach
+    task: Approach
+    cost: 0
+    isOpened: 0
+    pre:
+    - id: 2
+      value: 1
+    - id: 3
+      value: 1
+    post:
+    - id: 11
+      value: 1
+  - name: Aim
+    task: Aim
+    cost: 1
+    isOpened: 0
+    pre:
+    - id: 2
+      value: 1
+    - id: 0
+      value: 1
+    - id: 1
+      value: 1
+    post:
+    - id: 12
+      value: 1
+  - name: Shot
+    task: Shot
+    cost: 1
+    isOpened: 0
+    pre:
+    - id: 1
+      value: 1
+    - id: 12
+      value: 1
+    post:
+    - id: 7
+      value: 0
+    - id: 2
+      value: 0
+    - id: 12
+      value: 0
+  - name: DetonateBomb
+    task: DetonateBomb
+    cost: 3
+    isOpened: 0
+    pre:
+    - id: 3
+      value: 1
+    - id: 11
+      value: 1
+    post:
+    - id: 7
+      value: 0
+    - id: 9
+      value: 0
+    - id: 3
+      value: 0
+    - id: 8
+      value: 0
+  - name: SearchHeal
+    task: SearchHeal
+    cost: 4
+    isOpened: 0
+    pre:
+    - id: 8
+      value: 1
+    - id: 2
+      value: 0
+    post:
+    - id: 10
+      value: 1
+  - name: PickupHeal
+    task: PickupHeal
+    cost: 0
+    isOpened: 0
+    pre:
+    - id: 10
+      value: 1
+    - id: 8
+      value: 1
+    post:
+    - id: 10
+      value: 0
+    - id: 8
+      value: 0
+  goals:
+  - name: KillEmAll
+    isOpened: 0
+    conditions:
+    - id: 7
+      value: 0
+    - id: 8
+      value: 0
