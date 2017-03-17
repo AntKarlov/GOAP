@@ -2,6 +2,7 @@ namespace Anthill.AI
 {
 	public class AntAICondition
 	{
+		public string name;
 		public bool[] values;
 		public bool[] mask;
 

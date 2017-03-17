@@ -34,6 +34,8 @@ namespace Anthill.AI
 		private Vector2 _drag;
 		private Vector2 _totalDrag;
 
+		#region Initialize Window
+
 		[MenuItem("Anthill/AI Debugger")]
 		private static void ShowWindow()
 		{
@@ -41,11 +43,14 @@ namespace Anthill.AI
 			window.autoRepaintOnSceneChange = true;
 		}
 
+		#endregion
 		#region Unity Callbacks
 
 		private void OnEnable()
 		{
 			var textOffset = new RectOffset(12, 0, 10, 0);
+			var border = new RectOffset(12, 12, 12, 12);
+			bool richText = true;
 
 			_titleStyle = new GUIStyle();
 			_titleStyle.fontSize = 22;
@@ -53,26 +58,26 @@ namespace Anthill.AI
 
 			_nodeStyle = new GUIStyle();
 			_nodeStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node2.png") as Texture2D;
-			_nodeStyle.border = new RectOffset(12, 12, 12, 12);
-			_nodeStyle.richText = true;
+			_nodeStyle.border = border;
+			_nodeStyle.richText = richText;
 			_nodeStyle.padding = textOffset;
 
 			_taskNodeStyle = new GUIStyle();
 			_taskNodeStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node3.png") as Texture2D;
-			_taskNodeStyle.border = new RectOffset(12, 12, 12, 12);
-			_taskNodeStyle.richText = true;
+			_taskNodeStyle.border = border;
+			_taskNodeStyle.richText = richText;
 			_taskNodeStyle.padding = textOffset;
 
 			_activeTaskNodeStyle = new GUIStyle();
 			_activeTaskNodeStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node3 on.png") as Texture2D;
-			_activeTaskNodeStyle.border = new RectOffset(12, 12, 12, 12);
-			_activeTaskNodeStyle.richText = true;
+			_activeTaskNodeStyle.border = border;
+			_activeTaskNodeStyle.richText = richText;
 			_activeTaskNodeStyle.padding = textOffset;
 
 			_warningNodeStyle = new GUIStyle();
 			_warningNodeStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node6.png") as Texture2D;
-			_warningNodeStyle.border = new RectOffset(12, 12, 12, 12);
-			_warningNodeStyle.richText = true;
+			_warningNodeStyle.border = border;
+			_warningNodeStyle.richText = richText;
 			_warningNodeStyle.padding = textOffset;
 
 			_nodes = new List<AntAIDebuggerNode>();
@@ -111,10 +116,7 @@ namespace Anthill.AI
 			_titles.Clear();
 			_nodes.Clear();
 
-			_titles.Add(new TitleData() {
-				text = "Scenario: Actions and Tasks",
-				rect = new Rect(0.0f, -35.0f, 500.0f, 50.0f)
-			});
+			CreateTitle(0.0f, -35.0f, "Scenario: Actions and Goals");
 
 			// Список всех действий, необходим чтобы определить
 			// какие действия были связаны с задачами, а какие нет.
@@ -214,6 +216,14 @@ namespace Anthill.AI
 				taskNode.SetInput(taskNode.rect.width * 0.5f, 10.0f);
 				taskPos.y += taskNode.rect.height;
 			}
+		}
+
+		private void CreateTitle(float aX, float aY, string aTitle)
+		{
+			_titles.Add(new TitleData() {
+				text = "Scenario: Actions and Goals",
+				rect = new Rect(0.0f, -35.0f, 500.0f, 50.0f)
+			});
 		}
 
 		private AntAIDebuggerNode CreateMissingTaskNode(string aTitle, Vector2 aNodePosition)
@@ -394,7 +404,6 @@ namespace Anthill.AI
 				}
 			}
 
-			//_testNode.Drag(aDelta);
 			GUI.changed = true;
 		}
 

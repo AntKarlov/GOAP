@@ -10,13 +10,16 @@ namespace Anthill.AI
 
 		public List<string> atoms = new List<string>();
 		public List<AntAIAction> actions = new List<AntAIAction>();
-		public AntAICondition goal;
+		public List<AntAICondition> goals = new List<AntAICondition>();
 
 		public void LoadScenario(AntAIScenario aScenario)
 		{
-			AntAIScenarioAction scenarioAction;
-			AntAIAction action;
 			int atomIndex;
+
+			// AntLog.Trace("<b>Action List</b>");
+
+			AntAIAction action;
+			AntAIScenarioAction scenarioAction;
 			for (int i = 0, n = aScenario.actions.Length; i < n; i++)
 			{
 				scenarioAction = aScenario.actions[i];
@@ -24,42 +27,46 @@ namespace Anthill.AI
 				action.task = scenarioAction.task;
 				action.cost = scenarioAction.cost;
 
-				for (int j = 0, nj = scenarioAction.preConditions.Length; j < nj; j++)
+				// AntLog.Trace("Action: {0}", action.name);
+
+				for (int j = 0, nj = scenarioAction.pre.Length; j < nj; j++)
 				{
-					atomIndex = GetAtomIndex(aScenario.condition[scenarioAction.preConditions[j].id]);
-					action.pre.Set(atomIndex, scenarioAction.preConditions[j].value);
-					/*Pre(action.name, 
-						aScenario.condition[action.preConditions[j].id], 
-						action.preConditions[j].value);*/
+					atomIndex = GetAtomIndex(aScenario.conditions.GetName(scenarioAction.pre[j].id));
+					action.pre.Set(atomIndex, scenarioAction.pre[j].value);
 					/*AntLog.Trace("Pre -> {0}:{1}", 
-						_availConditions[action.preConditions[j].id],
-						action.preConditions[j].value);*/
+						aScenario.conditions.GetName(scenarioAction.pre[j].id),
+						scenarioAction.pre[j].value);*/
 				}
 
-				for (int j = 0, nj = scenarioAction.postConditions.Length; j < nj; j++)
+				for (int j = 0, nj = scenarioAction.post.Length; j < nj; j++)
 				{
-					atomIndex = GetAtomIndex(aScenario.condition[scenarioAction.postConditions[j].id]);
-					action.post.Set(atomIndex, scenarioAction.postConditions[j].value);
-					/*Post(action.name, 
-						aScenario.condition[action.postConditions[j].id], 
-						action.postConditions[j].value);*/
+					atomIndex = GetAtomIndex(aScenario.conditions.GetName(scenarioAction.post[j].id));
+					action.post.Set(atomIndex, scenarioAction.post[j].value);
 					/*AntLog.Trace("Post -> {0} : {1}", 
-						_availConditions[action.postConditions[j].id],
-						action.postConditions[j].value);*/
+						aScenario.conditions.GetName(scenarioAction.post[j].id),
+						scenarioAction.post[j].value);*/
 				}
-				
-				//_planner.SetTask(action.name, action.task);
-				//RegisterTask(action.name, action.task);
 			}
 
-			goal = new AntAICondition();
-			//AntLog.Trace("Goals:");
+			// AntLog.Trace("<b>Goal List</b>");
+
+			AntAICondition goal;
+			AntAIScenarioGoal scenarioGoal;
 			for (int i = 0, n = aScenario.goals.Length; i < n; i++)
 			{
-				goal.Set(this, aScenario.condition[aScenario.goals[i].id], aScenario.goals[i].value);
-				/*AntLog.Trace("{0} : {1}", 
-						_availConditions[aScenario.goals[i].id],
-						aScenario.goals[i].value);*/
+				scenarioGoal = aScenario.goals[i];
+				goal = GetGoal(scenarioGoal.name);
+
+				//AntLog.Trace("Goal: {0}", goal.name);
+
+				for (int j = 0, nj = scenarioGoal.conditions.Length; j < nj; j++)
+				{
+					goal.Set(this, aScenario.conditions.GetName(scenarioGoal.conditions[i].id),
+						scenarioGoal.conditions[j].value);
+					/*AntLog.Trace("Cond -> {0} : {1}", 
+						aScenario.conditions.GetName(scenarioGoal.conditions[j].id),
+						scenarioGoal.conditions[j].value);*/
+				}
 			}
 		}
 
@@ -130,20 +137,20 @@ namespace Anthill.AI
 			actions.Clear();
 		}
 
-		public string Describe()
+		public string Describe(string aTitle = "Result:")
 		{
-			StringBuilder result = new StringBuilder("Result:\n");
 			AntAIAction action;
+			StringBuilder result = new StringBuilder(string.Concat(aTitle, "\n"));
 			for (int i = 0, n = actions.Count; i < n; i++)
 			{
 				action = actions[i];
-				result.Append(string.Format("Action: {0} Task: {1} Cost: {2}\n", action.name, action.task, action.cost));
+				result.Append(string.Format("Action: '{0}' Task: '{1}' Cost: {2}\n", action.name, action.task, action.cost));
 				result.Append("  Preconditions:\n");
 				for (int j = 0; j < MAX_ATOMS; j++)
 				{
 					if (action.pre.GetMask(j))
 					{
-						result.Append(string.Format("    {0} == {1}\n", atoms[j], action.pre.GetValue(j)));
+						result.Append(string.Format("    '{0}' = {1}\n", atoms[j], action.pre.GetValue(j)));
 					}
 				}
 				result.Append("  Postconditions:\n");
@@ -151,7 +158,7 @@ namespace Anthill.AI
 				{
 					if (action.post.GetMask(j))
 					{
-						result.Append(string.Format("    {0} == {1}\n", atoms[j], action.post.GetValue(j)));
+						result.Append(string.Format("    '{0}' = {1}\n", atoms[j], action.post.GetValue(j)));
 					}
 				}
 			}
@@ -169,10 +176,26 @@ namespace Anthill.AI
 			return index;
 		}
 
+		public AntAICondition GetGoal(string aGoalName)
+		{
+			AntAICondition goal = FindGoal(aGoalName);
+			if (goal == null)
+			{
+				goal = new AntAICondition() { name = aGoalName };
+				goals.Add(goal);
+			}
+			return goal;
+		}
+
+		public AntAICondition FindGoal(string aGoalName)
+		{
+			return goals.Find(x => x.name.Equals(aGoalName));
+		}
+
 		public AntAIAction GetAction(string aActionName)
 		{
 			AntAIAction action = FindAction(aActionName);
-			if (action == null && actions.Count < MAX_ATOMS)
+			if (action == null && actions.Count < MAX_ACTIONS)
 			{
 				action = new AntAIAction(aActionName);
 				actions.Add(action);
@@ -273,6 +296,7 @@ namespace Anthill.AI
 		}
 
 		#region Private Methods
+
 		private List<AntAIAction> GetPossibleTransitions(AntAICondition aCurrent)
 		{
 			List<AntAIAction> possible = new List<AntAIAction>();
@@ -310,6 +334,7 @@ namespace Anthill.AI
 				current = (index == -1) ? aClosed[0] : aClosed[index];
 			}
 		}
-		#endregion Private Methods
+
+		#endregion
 	}
 }

@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEditor;
 
@@ -35,18 +34,32 @@ namespace Anthill.AI
 		{
 			serializedObject.Update();
 
+			DrawActionList();
+			DrawGoalList();
+
+			EditorGUILayout.Separator();
+			base.OnInspectorGUI();
+			
+			EditorUtility.SetDirty(_self);
+			serializedObject.ApplyModifiedProperties();
+		}
+
+		#endregion
+		#region Private Methods
+
+		private void DrawActionList()
+		{
 			Color c = GUI.color;
 			int delIndex = -1;
 
-			// -- Begin Actions
 			GUILayout.BeginVertical();
-			EditorGUILayout.LabelField("Actions:", EditorStyles.boldLabel);
+			EditorGUILayout.LabelField("Action List", EditorStyles.boldLabel);
 
 			AntAIScenarioAction action;
 			if (_self.actions.Length == 0)
 			{
 				GUILayout.BeginVertical("box");
-				EditorGUILayout.LabelField("The Actions List is Empty.");
+				EditorGUILayout.LabelField("The Action List is Empty.");
 				GUILayout.EndVertical();
 			}
 
@@ -70,9 +83,9 @@ namespace Anthill.AI
 				
 				GUI.color = c;
 
-				if (GUILayout.Button((action.showSettings) ? "-" : "+", GUILayout.MaxWidth(18.0f), GUILayout.MaxHeight(16.0f)))
+				if (GUILayout.Button((action.isOpened) ? "-" : "+", GUILayout.MaxWidth(18.0f), GUILayout.MaxHeight(16.0f)))
 				{
-					action.showSettings = !action.showSettings;
+					action.isOpened = !action.isOpened;
 				}
 				
 				GUI.color = c * new Color(1.0f, 1.0f, 0.5f);
@@ -85,7 +98,7 @@ namespace Anthill.AI
 				GUILayout.Space(2.0f);
 				GUILayout.EndVertical();
 
-				if (action.showSettings)
+				if (action.isOpened)
 				{
 					GUILayout.Space(2.0f);
 
@@ -102,14 +115,13 @@ namespace Anthill.AI
 					action.cost = EditorGUILayout.IntField("Cost", action.cost);
 					
 					GUILayout.Space(10.0f);
-					DrawConditionsList("Pre Conditions", ref action.preConditions);
+					DrawConditionsList("Pre Conditions", ref action.pre);
 					GUILayout.Space(10.0f);
-					DrawConditionsList("Post Conditions", ref action.postConditions);
+					DrawConditionsList("Post Conditions", ref action.post);
 
 					GUILayout.Space(2.0f);
 				}
 				GUILayout.EndVertical();
-				//GUILayout.Space(4.0f);
 			}
 
 			if (GUILayout.Button("Add Action"))
@@ -123,54 +135,96 @@ namespace Anthill.AI
 			}
 
 			GUILayout.EndVertical();
-			// -- End Actions
-
-			// -- Begin Goal
-			EditorGUILayout.Separator();
-			EditorGUILayout.LabelField("Goals:", EditorStyles.boldLabel);
-			GUILayout.BeginVertical("box");
-			DrawConditionsList("Add Goal", ref _self.goals);
-			GUILayout.EndVertical();
-			// -- End Goal
-
-			EditorGUILayout.Separator();
-			base.OnInspectorGUI();
-			
-			EditorUtility.SetDirty(_self);
-			serializedObject.ApplyModifiedProperties();
 		}
 
-		#endregion
-		#region Private Methods
+		private void DrawGoalList()
+		{
+			Color c = GUI.color;
+			int delIndex = -1;
 
-		private void DrawConditionsList(string aLabel, ref AntAIScenarioActionItem[] aConditions)
+			EditorGUILayout.Separator();
+			EditorGUILayout.BeginVertical();
+			EditorGUILayout.LabelField("Goal List", EditorStyles.boldLabel);
+
+			AntAIScenarioGoal goal;
+			if (_self.goals.Length == 0)
+			{
+				GUILayout.BeginVertical("box");
+				EditorGUILayout.LabelField("The Goal List is Empty.");
+				GUILayout.EndVertical();
+			}
+
+			for (int i = 0, n = _self.goals.Length; i < n; i++)
+			{
+				GUILayout.BeginVertical("box");
+
+				goal = _self.goals[i];
+				GUILayout.BeginVertical(_rowStyleA);
+				GUILayout.BeginHorizontal();
+				GUI.color = c * new Color(1.0f, 1.0f, 0.5f);
+				EditorGUILayout.LabelField(goal.name, EditorStyles.boldLabel);
+				GUI.color = c;
+
+				if (GUILayout.Button((goal.isOpened) ? "-" : "+", GUILayout.MaxWidth(18.0f), GUILayout.MaxHeight(16.0f)))
+				{
+					goal.isOpened = !goal.isOpened;
+				}
+				
+				GUI.color = c * new Color(1.0f, 1.0f, 0.5f);
+				if (GUILayout.Button("x", GUILayout.MaxWidth(18.0f), GUILayout.MaxHeight(16.0f)))
+				{
+					delIndex = i;
+				}
+				GUI.color = c;
+				GUILayout.EndHorizontal();
+				GUILayout.Space(2.0f);
+				GUILayout.EndVertical();
+
+				if (goal.isOpened)
+				{
+					GUILayout.Space(2.0f);
+					goal.name = EditorGUILayout.TextField("Goal", goal.name);
+					GUILayout.Space(10.0f);
+					DrawConditionsList("Conditions", ref goal.conditions);
+					GUILayout.Space(2.0f);
+				}
+
+				GUILayout.EndVertical();
+			}
+
+			if (GUILayout.Button("Add Goal"))
+			{
+				AddToArray<AntAIScenarioGoal>(ref _self.goals, new AntAIScenarioGoal());
+			}
+
+			if (delIndex > -1)
+			{
+				RemoveFromArrayAt<AntAIScenarioGoal>(ref _self.goals, delIndex);
+			}
+
+			EditorGUILayout.EndVertical();
+		}
+
+		private void DrawConditionsList(string aLabel, ref AntAIScenarioItem[] aConditions)
 		{
 			Color c = GUI.color;
 			GUILayout.BeginVertical(_rowStyleA);
 			
-			var list = new string[_self.condition.list.Length + 1];
+			var list = new string[_self.conditions.list.Length + 1];
 			list[0] = "- Select to Add -";
 			for (int i = 1, n = list.Length; i < n; i++)
 			{
-				list[i] = _self.condition.list[i - 1].name;
+				list[i] = _self.conditions.list[i - 1].name;
 			}
 
 			int addIndex = EditorGUILayout.Popup(aLabel, 0, list);
 			if (addIndex > 0)
 			{
-				int id = GetConditionIndex(list[addIndex]);
-				if (id > -1)
-				{
-					int index = Array.FindIndex(aConditions, x => x.id == id);
-					if (index < 0 || index >= aConditions.Length)
-					{
-						var item = new AntAIScenarioActionItem() {
-							id = id,
-							value = true
-						};
-						AddToArray<AntAIScenarioActionItem>(ref aConditions, item);
-					}
-				}
+				var item = new AntAIScenarioItem() {
+					id = _self.conditions.GetID(list[addIndex]),
+					value = true
+				};
+				AddToArray<AntAIScenarioItem>(ref aConditions, item);
 			}
 			GUILayout.EndVertical();
 			
@@ -184,7 +238,7 @@ namespace Anthill.AI
 				{
 					aConditions[i].value = !aConditions[i].value;
 				}
-				GUILayout.Label(_self.condition.list[aConditions[i].id].name);
+				GUILayout.Label(_self.conditions.GetName(aConditions[i].id));
 				GUI.color = c;
 				if (GUILayout.Button("x", GUILayout.MaxWidth(20.0f), GUILayout.MaxHeight(16.0f)))
 				{
@@ -197,14 +251,8 @@ namespace Anthill.AI
 
 			if (delIndex > -1)
 			{
-				RemoveFromArrayAt<AntAIScenarioActionItem>(ref aConditions, delIndex);
+				RemoveFromArrayAt<AntAIScenarioItem>(ref aConditions, delIndex);
 			}
-		}
-
-		private int GetConditionIndex(string aConditionName)
-		{
-			int index = Array.FindIndex(_self.condition.list, x => string.Equals(x.name, aConditionName));
-			return (index >= 0 && index < _self.condition.list.Length) ? index : -1;
 		}
 
 		private void AddToArray<T>(ref T[] aSource, T aItem)

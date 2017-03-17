@@ -6,10 +6,10 @@ namespace Anthill.AI
 	public class AntAINode
 	{
 		public AntAICondition parent; // Состояние из которого мы пришли.
-		public AntAICondition world; // Состояние мира для этого узла.
-		public string action; // Действие которое привело к этому узлу.
-		public int heuristic; // Остаточная стоимость.
-		public int cost; // Стоимость узла.
-		public int sum; // Сумма heruistic и cost.
+		public AntAICondition world;  // Состояние мира для этого узла.
+		public string action;         // Действие которое привело к этому узлу.
+		public int heuristic;         // Остаточная стоимость.
+		public int cost;              // Стоимость узла.
+		public int sum;               // Сумма heruistic и cost.
 	}
 }
