@@ -287,7 +287,7 @@ namespace Anthill.Utils
 		public static Vector2[] GetBezierCurve(Vector2[] aKeyPoints)
 		{
 			float length = 0f;
-			float step = 0.025f;
+			float step = 0.05f;
 			int n = aKeyPoints.Length;
 
 			int k = 0;
@@ -303,7 +303,7 @@ namespace Anthill.Utils
 				}
 
 				result[k++] = point;
-				length += 0.025f;
+				length += 0.05f;
 			}
 
 			result[result.Length - 1] = aKeyPoints[aKeyPoints.Length - 1];
