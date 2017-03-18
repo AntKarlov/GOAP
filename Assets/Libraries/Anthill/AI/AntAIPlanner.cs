@@ -8,9 +8,16 @@ namespace Anthill.AI
 		public const int MAX_ATOMS = 32;
 		public const int MAX_ACTIONS = 32;
 
+		public delegate void PlanUpdatedDelegate(AntAIPlan aNewPlan);
+		public event PlanUpdatedDelegate EventPlanUpdated;
+
 		public List<string> atoms = new List<string>();
 		public List<AntAIAction> actions = new List<AntAIAction>();
 		public List<AntAICondition> goals = new List<AntAICondition>();
+
+		#if UNITY_EDITOR
+		public AntAICondition debugConditions; // Using for debugger only.
+		#endif
 
 		public void LoadScenario(AntAIScenario aScenario)
 		{
@@ -61,7 +68,7 @@ namespace Anthill.AI
 
 				for (int j = 0, nj = scenarioGoal.conditions.Length; j < nj; j++)
 				{
-					goal.Set(this, aScenario.conditions.GetName(scenarioGoal.conditions[i].id),
+					goal.Set(this, aScenario.conditions.GetName(scenarioGoal.conditions[j].id),
 						scenarioGoal.conditions[j].value);
 					/*AntLog.Trace("Cond -> {0} : {1}", 
 						aScenario.conditions.GetName(scenarioGoal.conditions[j].id),
@@ -139,18 +146,22 @@ namespace Anthill.AI
 
 		public string Describe(string aTitle = "Result:")
 		{
+			bool value = false;
 			AntAIAction action;
 			StringBuilder result = new StringBuilder(string.Concat(aTitle, "\n"));
 			for (int i = 0, n = actions.Count; i < n; i++)
 			{
 				action = actions[i];
-				result.Append(string.Format("Action: '{0}' Task: '{1}' Cost: {2}\n", action.name, action.task, action.cost));
+				result.Append(string.Format("Action: '{0}' Task: '{1}' Cost: {2}\n", 
+					action.name, action.task, action.cost));
 				result.Append("  Preconditions:\n");
 				for (int j = 0; j < MAX_ATOMS; j++)
 				{
 					if (action.pre.GetMask(j))
 					{
-						result.Append(string.Format("    '{0}' = {1}\n", atoms[j], action.pre.GetValue(j)));
+						value = action.pre.GetValue(j);
+						result.Append(string.Format("    '<color={2}>{0}</color>' = <color={2}>{1}</color>\n", 
+							atoms[j], value, (value) ? "green" : "red"));
 					}
 				}
 				result.Append("  Postconditions:\n");
@@ -158,7 +169,9 @@ namespace Anthill.AI
 				{
 					if (action.post.GetMask(j))
 					{
-						result.Append(string.Format("    '{0}' = {1}\n", atoms[j], action.post.GetValue(j)));
+						value = action.post.GetValue(j);
+						result.Append(string.Format("    '<color={2}>{0}</color>' = <color={2}>{1}</color>\n", 
+							atoms[j], value, (value) ? "green" : "red"));
 					}
 				}
 			}
@@ -210,6 +223,10 @@ namespace Anthill.AI
 
 		public void MakePlan(ref AntAIPlan aPlan, AntAICondition aCurrent, AntAICondition aGoal)
 		{
+			#if UNITY_EDITOR
+			debugConditions = aCurrent.Clone();
+			#endif
+
 			List<AntAINode> opened = new List<AntAINode>();
 			List<AntAINode> closed = new List<AntAINode>();
 
@@ -243,6 +260,11 @@ namespace Anthill.AI
 					// Plan is found!
 					ReconstructPlan(ref aPlan, closed, current);
 					aPlan.isSuccess = true;
+					if (EventPlanUpdated != null)
+					{
+						EventPlanUpdated(aPlan);
+					}
+
 					return;
 				}
 
@@ -291,8 +313,14 @@ namespace Anthill.AI
 				}
 			}
 
+			// Failed plan.
 			ReconstructPlan(ref aPlan, closed, current);
-			aPlan.isSuccess = true;
+			aPlan.isSuccess = false;
+
+			if (EventPlanUpdated != null)
+			{
+				EventPlanUpdated(aPlan);
+			}
 		}
 
 		#region Private Methods

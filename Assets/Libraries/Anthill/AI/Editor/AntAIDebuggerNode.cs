@@ -10,6 +10,7 @@ namespace Anthill.AI
 		public string value;
 		public bool isDragged;
 		public bool isSelected;
+		public bool isActive;
 		public Vector2 outputOffset;
 		public Vector2 inputOffset;
 		public List<KeyValuePair<AntAIDebuggerNode, Color>> links;
@@ -26,6 +27,7 @@ namespace Anthill.AI
 			defaultNodeStyle = aDefaultStyle;
 			selectedNodeStyle = aSelectedStyle;
 			links = new List<KeyValuePair<AntAIDebuggerNode, Color>>();
+			isActive = true;
 		}
 
 		public void SetOutput(float aX, float aY)

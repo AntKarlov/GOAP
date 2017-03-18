@@ -89,6 +89,11 @@ namespace Game.Components
 		#endregion
 		#region IAIProvider Implementation
 
+		public string Name
+		{
+			get { return gameObject.name; }
+		}
+
 		public AntAITask[] Tasks
 		{
 			get { return tasks; }

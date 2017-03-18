@@ -241,6 +241,14 @@ MonoBehaviour:
       value: 0
     - id: 8
       value: 0
+  - name: <Unnamed>
+    task: <Unnamed>
+    cost: 0
+    isOpened: 1
+    pre:
+    - id: 0
+      value: 1
+    post: []
   goals:
   - name: KillEmAll
     isOpened: 0
@@ -248,4 +256,11 @@ MonoBehaviour:
     - id: 7
       value: 0
     - id: 8
+      value: 0
+  - name: <Unnamed>
+    isOpened: 0
+    conditions:
+    - id: 12
+      value: 1
+    - id: 0
       value: 0

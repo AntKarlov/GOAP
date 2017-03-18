@@ -6,12 +6,14 @@ using Anthill.Utils;
 
 namespace Anthill.AI
 {
-	// + Выводить доступные действия (сценарий) (выделять текущую) 
-	// - Выводить доступные цели (выделять текущую)
-	// + Выводить доступные задачи (выделять текущую)
-	// - Выводить текущий план
-	// - Выводить текущее состояние мира
+	// + Выводить доступные действия
+	// + Выводить доступные цели
+	// + Выводить доступные задачи
+	// + Выводить текущий план
+	// + Выводить текущее состояние мира
 	// - Выводить содержимое памяти
+	// + Показывать связь с текущей задачей.
+	// + Отмечать провальный план.
 	public class AntAIDebugger : EditorWindow
 	{
 		private struct TitleData
@@ -22,17 +24,30 @@ namespace Anthill.AI
 
 		private GUIStyle _titleStyle;
 		private GUIStyle _nodeStyle;
-		private GUIStyle _taskNodeStyle;
-		private GUIStyle _activeTaskNodeStyle;
+		private GUIStyle _taskStyle;
+		private GUIStyle _goalStyle;
+		private GUIStyle _activeGoalStyle;
+		private GUIStyle _planStyle;
+		private GUIStyle _activePlanStyle;
+		private GUIStyle _failedPlanStyle;
+		private GUIStyle _activeFailedPlanStyle;
 		private GUIStyle _warningNodeStyle;
 
 		private IAIProvider _provider;
 		private List<AntAIDebuggerNode> _nodes;
+		private List<AntAIDebuggerNode> _genericNodes;
+		private Vector2 _planNodesPosition;
 		private List<TitleData> _titles;
+		private AntAIPlan _currentPlan;
 
 		private Vector2 _offset;
 		private Vector2 _drag;
 		private Vector2 _totalDrag;
+
+		private string _titleColor = "#61AFEF";
+		private string _nameColor = "#e5c07b";
+		private string _trueColor = "#98C35F";
+		private string _falseColor = "#Dd6870";
 
 		#region Initialize Window
 
@@ -48,39 +63,22 @@ namespace Anthill.AI
 
 		private void OnEnable()
 		{
-			var textOffset = new RectOffset(12, 0, 10, 0);
-			var border = new RectOffset(12, 12, 12, 12);
-			bool richText = true;
-
 			_titleStyle = new GUIStyle();
 			_titleStyle.fontSize = 22;
 			_titleStyle.normal.textColor = Color.gray;
 
-			_nodeStyle = new GUIStyle();
-			_nodeStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node2.png") as Texture2D;
-			_nodeStyle.border = border;
-			_nodeStyle.richText = richText;
-			_nodeStyle.padding = textOffset;
-
-			_taskNodeStyle = new GUIStyle();
-			_taskNodeStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node3.png") as Texture2D;
-			_taskNodeStyle.border = border;
-			_taskNodeStyle.richText = richText;
-			_taskNodeStyle.padding = textOffset;
-
-			_activeTaskNodeStyle = new GUIStyle();
-			_activeTaskNodeStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node3 on.png") as Texture2D;
-			_activeTaskNodeStyle.border = border;
-			_activeTaskNodeStyle.richText = richText;
-			_activeTaskNodeStyle.padding = textOffset;
-
-			_warningNodeStyle = new GUIStyle();
-			_warningNodeStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node6.png") as Texture2D;
-			_warningNodeStyle.border = border;
-			_warningNodeStyle.richText = richText;
-			_warningNodeStyle.padding = textOffset;
+			_nodeStyle = CreateNodeStyle("node0.png");
+			_taskStyle = CreateNodeStyle("node0.png");
+			_goalStyle = CreateNodeStyle("node1.png");
+			_activeGoalStyle = CreateNodeStyle("node1 on.png");
+			_planStyle = CreateNodeStyle("node0.png");
+			_activePlanStyle = CreateNodeStyle("node0 on.png");
+			_failedPlanStyle = CreateNodeStyle("node6.png");
+			_activeFailedPlanStyle = CreateNodeStyle("node6 on.png");
+			_warningNodeStyle = CreateNodeStyle("node6.png");
 
 			_nodes = new List<AntAIDebuggerNode>();
+			_genericNodes = new List<AntAIDebuggerNode>();
 			_titles = new List<TitleData>();
 		}
 
@@ -89,10 +87,38 @@ namespace Anthill.AI
 			if (Selection.activeGameObject != null)
 			{
 				var p = Selection.activeGameObject.GetComponent<IAIProvider>();
-				if (!System.Object.ReferenceEquals(p, _provider))
+				if (p == null)
+				{
+					_nodes.Clear();
+					_genericNodes.Clear();
+					_titles.Clear();
+
+					if (_provider != null)
+					{
+						_provider.Logic.Planner.EventPlanUpdated -= OnPlanUpdated;
+						_provider = null;
+					}
+				}
+				else if (!System.Object.ReferenceEquals(p, _provider))
 				{
 					_provider = p;
-					InitializeActionNodes(_totalDrag);
+
+					_nodes.Clear();
+					_titles.Clear();
+					
+					CreateTitle(0.0f, 0.0f, string.Format("{0}: Actions and Goals", p.Name));
+
+					float actionsHeight = 0.0f;
+					RebuildActionNodes(new Vector2(_totalDrag.x, _totalDrag.y + 35.0f), out actionsHeight);
+					actionsHeight += 35.0f;
+
+					float goalsHeight = 0.0f;
+					RebuildGoalNodes(new Vector2(_totalDrag.x, _totalDrag.y + actionsHeight), out goalsHeight);
+
+					CreateTitle(0.0f, actionsHeight + goalsHeight + 15.0f, string.Format("{0}: Current Plan", p.Name));
+					_planNodesPosition = new Vector2(0.0f, actionsHeight + goalsHeight + 45.0f);
+
+					_provider.Logic.Planner.EventPlanUpdated += OnPlanUpdated;
 				}
 			}
 
@@ -101,23 +127,56 @@ namespace Anthill.AI
 				DrawGrid(20, Color.gray, 0.05f);
 				DrawGrid(100, Color.gray, 0.05f);
 
-				DrawNodes();
+				if (Event.current.type == EventType.Repaint)
+				{
+					DrawTitles(_titles);
+					DrawLinks(_nodes, true);
+					DrawLinks(_genericNodes, false);
+					DrawCurrentStateLink();
+					DrawNodes(_nodes);
+					DrawNodes(_genericNodes);
+					Repaint();
+				}
 
 				ProcessEvents(Event.current);
-				Repaint();
+				
 			}
+			else
+			{
+				if (Event.current.type == EventType.Repaint)
+				{
+					GUI.Label(new Rect(10.0f, 10.0f, 
+						200.0f, 50.0f), "Object with AI Not Selected.", _titleStyle);
+				}
+			}
+		}
+
+		#endregion
+		#region Event Handlers
+
+		private void OnPlanUpdated(AntAIPlan aPlan)
+		{
+			float tmp;
+			_currentPlan = aPlan;
+			UpdatePlan(_totalDrag + _planNodesPosition, out tmp);
 		}
 
 		#endregion
 		#region Private Methods
 
-		private void InitializeActionNodes(Vector2 aNodePosition)
+		private GUIStyle CreateNodeStyle(string aPic)
 		{
-			_titles.Clear();
-			_nodes.Clear();
+			var style = new GUIStyle();
+			style.normal.background = EditorGUIUtility.Load(string.Concat("builtin skins/darkskin/images/", aPic)) as Texture2D;
+			style.border = new RectOffset(12, 12, 12, 12);
+			style.richText = true;
+			style.padding = new RectOffset(12, 0, 10, 0);
+			style.normal.textColor = new Color(0.639f, 0.65f, 0.678f);
+			return style;
+		}
 
-			CreateTitle(0.0f, -35.0f, "Scenario: Actions and Goals");
-
+		private void RebuildActionNodes(Vector2 aNodePosition, out float aMaxHeigth)
+		{
 			// Список всех действий, необходим чтобы определить
 			// какие действия были связаны с задачами, а какие нет.
 			AntAIAction action;
@@ -128,6 +187,7 @@ namespace Anthill.AI
 				unusedActions.Add(new KeyValuePair<AntAIAction, bool>(action, false));
 			}
 
+			aMaxHeigth = 0.0f;
 			float totalWidth = 0.0f;
 			float totalHeight = 0.0f;
 			int foundCount = 0;
@@ -183,6 +243,9 @@ namespace Anthill.AI
 					{
 						toLinkNodes[j].LinkTo(taskNode, new Color(0.3f, 0.7f, 0.4f));
 					}
+
+					totalHeight += taskNode.rect.height;
+					aMaxHeigth = (totalHeight > aMaxHeigth) ? totalHeight : aMaxHeigth;
 				}
 				else
 				{
@@ -208,6 +271,7 @@ namespace Anthill.AI
 			}
 
 			// Создаем оставшиеся задачи.
+			totalHeight = 0.0f;
 			taskPos = aNodePosition;
 			for (int i = 0, n = unusedTasks.Count; i < n; i++)
 			{
@@ -215,126 +279,429 @@ namespace Anthill.AI
 				taskNode = CreateTaskNode(unusedTasks[i], taskPos, isDefaultTask);
 				taskNode.SetInput(taskNode.rect.width * 0.5f, 10.0f);
 				taskPos.y += taskNode.rect.height;
+				totalHeight += taskNode.rect.height;
+			}
+
+			aMaxHeigth = (totalHeight > aMaxHeigth) ? totalHeight : aMaxHeigth;
+		}
+
+		private void RebuildGoalNodes(Vector2 aNodePosition, out float aMaxHeight)
+		{
+			aMaxHeight = 0.0f;
+			AntAIDebuggerNode goalNode;
+			for (int i = 0, n = _provider.Logic.Planner.goals.Count; i < n; i++)
+			{
+				goalNode = CreateGoalNode(_provider.Logic.Planner.goals[i], ref aNodePosition);
+				aMaxHeight = (goalNode.rect.height > aMaxHeight) ? goalNode.rect.height : aMaxHeight;
 			}
 		}
 
+		private void UpdatePlan(Vector2 aNodePosition, out float aMaxHeight)
+		{
+			for (int i = 0, n = _genericNodes.Count; i < n; i++)
+			{
+				_genericNodes[i].isActive = false;
+			}
+
+			aMaxHeight = 0.0f;
+			int curIndex = 0;
+			AntAIDebuggerNode node;
+			if (_genericNodes.Count > 0)
+			{
+				node = _genericNodes[curIndex];
+				UpdateWorldStateNode(_provider.Logic.Planner.debugConditions, node);
+				node.isActive = true;
+				node.rect.x = aNodePosition.x;
+				aNodePosition.x += node.rect.width;
+			}
+			else
+			{
+				node = CreateWorldStateNode(_provider.Logic.Planner.debugConditions, ref aNodePosition);
+			}
+
+			curIndex++;
+			AntAIAction action;
+			AntAICondition conditions = _provider.Logic.Planner.debugConditions;
+			AntAICondition prevConditions;
+			for (int i = 0, n = _currentPlan.Count; i < n; i++)
+			{
+				action = _provider.Logic.Planner.GetAction(_currentPlan[i]);
+				prevConditions = conditions.Clone();
+				conditions.Act(action.post);
+				if (curIndex < _genericNodes.Count)
+				{
+					node = _genericNodes[curIndex];
+					UpdatePlanNode(action, conditions, prevConditions, node);
+					node.isActive = true;
+					node.rect.x = aNodePosition.x;
+					aNodePosition.x += node.rect.width;
+				}
+				else
+				{
+					node = CreatePlanNode(action, conditions, prevConditions, ref aNodePosition);
+				}
+				
+				aMaxHeight = (node.rect.height > aMaxHeight) ? node.rect.height : aMaxHeight;
+				curIndex++;
+			}
+		}
+
+		/// <summary>
+		/// Создает заголовок.
+		/// </summary>
 		private void CreateTitle(float aX, float aY, string aTitle)
 		{
 			_titles.Add(new TitleData() {
-				text = "Scenario: Actions and Goals",
-				rect = new Rect(0.0f, -35.0f, 500.0f, 50.0f)
+				text = aTitle,
+				rect = new Rect(aX, aY, 500.0f, 50.0f)
 			});
 		}
 
+		/// <summary>
+		/// Создает ноду состояния информирующую о том что состояние не найдено.
+		/// </summary>
 		private AntAIDebuggerNode CreateMissingTaskNode(string aTitle, Vector2 aNodePosition)
 		{
-			return AddNode(string.Format("<color={1}><b>TASK: '{0}'</b>\n\r   Non-existent task!</color>", aTitle, "#FFFFFF"), 
+			return AddNode(string.Format("<b><color={1}>TASK</color> '<color={2}>{0}</color>'</b>\n\r   Non-existent task!", 
+				aTitle, _titleColor, _nameColor), 
 				220.0f, 54.0f, _warningNodeStyle, _warningNodeStyle, ref aNodePosition);
 		}
 
+		/// <summary>
+		/// Создает ноду состояния.
+		/// </summary>
 		private AntAIDebuggerNode CreateTaskNode(AntAITask aTask, Vector2 aNodePosition, bool isDefault)
 		{
 			string title;
 			float height = 40.0f;
 			if (isDefault)
 			{
-				title = string.Format("<b>TASK: '{0}'</b>\n\r   This is Default Task", aTask.name);
+				title = string.Format("<b><color={1}>TASK</color> '<color={2}>{0}</color>'</b>\n\r   This is Default Task", 
+					aTask.name, _titleColor, _nameColor);
 				height += 14.0f;
 			}
 			else
 			{
-				title = string.Format("<b>TASK: '{0}'</b>", aTask.name);
+				title = string.Format("<b><color={1}>TASK</color> '<color={2}>{0}</color>'</b>", 
+					aTask.name, _titleColor, _nameColor);
 			}
-			return AddNode(title, 220.0f, height, _taskNodeStyle, _taskNodeStyle, ref aNodePosition);
+
+			AntAIDebuggerNode node = AddNode(title, 220.0f, height, _taskStyle, _taskStyle, ref aNodePosition);
+			node.value = aTask.name;
+			return node;
 		}
 
 		private AntAIDebuggerNode CreateActionNode(AntAIAction aAction, ref Vector2 aNodePosition)
 		{
 			bool value = false;
+			var desc = new List<string>();
+			desc.Add(string.Format("<b><color={2}>ACTION</color> '<color={3}>{0}</color>'</b> [{1}]", 
+				aAction.name, aAction.cost, _titleColor, _nameColor));
+			desc.Add("   <b>Pre Conditions</b>");
+
+			for (int i = 0; i < AntAIPlanner.MAX_ATOMS; i++)
+			{
+				if (aAction.pre.GetMask(i))
+				{
+					value = aAction.pre.GetValue(i);
+					desc.Add(string.Format("      '<color={2}>{0}</color>' = <color={2}>{1}</color>", 
+						_provider.Logic.Planner.atoms[i], value, (value) ? _trueColor : _falseColor));
+				}
+			}
+
+			desc.Add("   <b>Post Conditions</b>");
+			for (int i = 0; i < AntAIPlanner.MAX_ATOMS; i++)
+			{
+				if (aAction.post.GetMask(i))
+				{
+					value = aAction.post.GetValue(i);
+					desc.Add(string.Format("      '<color={2}>{0}</color>' = <color={2}>{1}</color>", 
+						_provider.Logic.Planner.atoms[i], value, (value) ? _trueColor : _falseColor));
+				}
+			}
+
 			StringBuilder text = new StringBuilder();
-			text.Append(string.Format("<b>ACTION: '{0}'</b> [{2}]\n\r", 
-				aAction.name, aAction.task, aAction.cost));
-			int lines = 1;
-			
-			text.Append("<b>Pre Conditions</b>\n\r");
-			lines++;
-			for (int j = 0; j < AntAIPlanner.MAX_ATOMS; j++)
+			for (int i = 0, n = desc.Count; i < n; i++)
 			{
-				if (aAction.pre.GetMask(j))
-				{
-					value = aAction.pre.GetValue(j);
-					text.Append(string.Format("   <color={2}>'{0}' = {1}</color>\n\r", 
-						_provider.Logic.Planner.atoms[j], value, (value) ? "#004d00" : "#800000"));
-					lines++;
-				}
-			}
-			text.Append("<b>Post Conditions</b>\n\r");
-			lines++;
-			for (int j = 0; j < AntAIPlanner.MAX_ATOMS; j++)
-			{
-				if (aAction.post.GetMask(j))
-				{
-					value = aAction.post.GetValue(j);
-					text.Append(string.Format("   <color={2}>'{0}' = {1}</color>\n\r", 
-						_provider.Logic.Planner.atoms[j], value, (value) ? "#004d00" : "#800000"));
-					lines++;
-				}
+				text.AppendLine(desc[i]);
 			}
 
-			GUIStyle style = _nodeStyle;
-			// todo менять стиль в зависимости от текущей задачи
-			return AddNode(text.ToString(), 220.0f, 14.0f * (float) (lines + 1) + 7.0f, style, style, ref aNodePosition);
+			return AddNode(text.ToString(), 220.0f, CalcHeight(desc.Count), _nodeStyle, _nodeStyle, ref aNodePosition);
 		}
 
-		private void DrawNodes()
+		/// <summary>
+		/// Описывает состояние.
+		/// </summary>
+		private void DescribeCondition(AntAICondition aCondition, ref List<string> aResult)
 		{
-			if (_nodes != null)
+			bool value;
+			for (int i = 0; i < AntAIPlanner.MAX_ATOMS; i++)
 			{
-				if (Event.current.type == EventType.Repaint)
+				if (aCondition.GetMask(i))
 				{
-					AntAIDebuggerNode node;
-					for (int i = 0, n = _nodes.Count; i < n; i++)
-					{
-						node = _nodes[i];
-						if (node.links.Count > 0)
-						{
-							for (int j = 0, nj = node.links.Count; j < nj; j++)
-							{
-								AntDrawer.DrawVerticalSolidConnection(node.Output, node.links[j].Key.Input, node.links[j].Value, 1, 15.0f);
-							}
-						}
-					}
-
-					for (int i = 0, n = _nodes.Count; i < n; i++)
-					{
-						_nodes[i].Draw();
-					}
-				}
-			}
-
-			if (_titles != null)
-			{
-				if (Event.current.type == EventType.Repaint)
-				{
-					TitleData t;
-					for (int i = 0, n = _titles.Count; i < n; i++)
-					{
-						t = _titles[i];
-						GUI.Label(new Rect(t.rect.x + _totalDrag.x, t.rect.y + _totalDrag.y, 
-							t.rect.width, t.rect.height), t.text, _titleStyle);
-					}
+					value = aCondition.GetValue(i);
+					aResult.Add(string.Format("      '<color={2}>{0}</color>' = <color={2}>{1}</color>", 
+						_provider.Logic.Planner.atoms[i], value, (value) ? _trueColor : _falseColor));
 				}
 			}
 		}
+
+		/// <summary>
+		/// Создает новую ноду описывающую поставленную задачу (состояния к которым стримится ИИ).
+		/// </summary>
+		private AntAIDebuggerNode CreateGoalNode(AntAICondition aGoal, ref Vector2 aNodePosition)
+		{
+			List<string> desc = new List<string>();
+			desc.Add(string.Format("<b><color={1}>GOAL</color> '<color={2}>{0}</color>'</b>",
+				aGoal.name, _titleColor, _nameColor));
+			desc.Add("   <b>Tends to conditions</b>");
+			DescribeCondition(aGoal, ref desc);
+
+			StringBuilder text = new StringBuilder();
+			for (int i = 0, n = desc.Count; i < n; i++)
+			{
+				text.AppendLine(desc[i]);
+			}
+
+			GUIStyle style = (System.Object.ReferenceEquals(aGoal, _provider.Logic.CurrentGoal)) ? _activeGoalStyle : _goalStyle;
+			return AddNode(text.ToString(), 220.0f, CalcHeight(desc.Count), style, style, ref aNodePosition);
+		}
+
+		/// <summary>
+		/// Создает новую ноду описывающуюу текущее состояние мира (условия ИИ).
+		/// </summary>
+		private AntAIDebuggerNode CreateWorldStateNode(AntAICondition aCondition, ref Vector2 aNodePosition)
+		{
+			List<string> desc = new List<string>();
+			desc.Add(string.Format("<b><color={0}>WORLD STATE</color></b>", _titleColor));
+			desc.Add("   <b>Current Conditions</b>");
+			DescribeCondition(aCondition, ref desc);
+
+			StringBuilder text = new StringBuilder();
+			for (int i = 0, n = desc.Count; i < n; i++)
+			{
+				text.AppendLine(desc[i]);
+			}
+
+			var node = AddNode(text.ToString(), 220.0f, CalcHeight(desc.Count), _nodeStyle, _nodeStyle, ref aNodePosition, false);
+			node.SetOutput(node.rect.width - 10.0f, node.rect.height * 0.5f);
+			node.SetInput(10.0f, node.rect.height * 0.5f);
+			_genericNodes.Add(node);
+			return node;
+		}
+
+		/// <summary>
+		/// Обновляет информацию уже существующей ноды описывающей состояние мира (условий ИИ).
+		/// </summary>
+		private void UpdateWorldStateNode(AntAICondition aCondition, AntAIDebuggerNode aNode)
+		{
+			List<string> desc = new List<string>();
+			desc.Add(string.Format("<b><color={0}>WORLD STATE</color></b>", _titleColor));
+			desc.Add("   <b>Current Conditions</b>");
+			DescribeCondition(aCondition, ref desc);
+
+			StringBuilder text = new StringBuilder();
+			for (int i = 0, n = desc.Count; i < n; i++)
+			{
+				text.AppendLine(desc[i]);
+			}
+
+			aNode.title = text.ToString();
+			aNode.rect.height = CalcHeight(desc.Count);
+		}
+
+		/// <summary>
+		/// Описывает конкретное действие из плана ИИ.
+		/// </summary>
+		private string DescribePlanAction(AntAICondition aCur, AntAICondition aPre, out int aNumLines)
+		{
+			var lines = new List<string>();
+			lines.Add(string.Format("<b><color={1}>ACTION</color> '<color={2}>{0}</color>'</b>", 
+				aCur.name, _titleColor, _nameColor));
+			lines.Add("   <b>Post Conditions</b>");
+
+			bool value;
+			for (int j = 0; j < AntAIPlanner.MAX_ATOMS; j++)
+			{
+				if (aCur.GetMask(j))
+				{
+					value = aCur.GetValue(j);
+					if (value != aPre.GetValue(j))
+					{
+						lines.Add(string.Format("      <color=#a873dd><b>></b></color> <i>'<color={2}>{0}</color>' = <color={2}>{1}</color></i>", 
+							_provider.Logic.Planner.atoms[j], value, (value) ? _trueColor : _falseColor));
+					}
+					else
+					{
+						lines.Add(string.Format("      '<color={2}>{0}</color>' = <color={2}>{1}</color>", 
+							_provider.Logic.Planner.atoms[j], value, (value) ? _trueColor : _falseColor));
+					}
+				}
+			}
+
+			StringBuilder text = new StringBuilder();
+			for (int i = 0, n = lines.Count; i < n; i++)
+			{
+				text.AppendLine(lines[i]);
+			}
+
+			aNumLines = lines.Count;
+			return text.ToString();
+		}
+
+		/// <summary>
+		/// Создает новую ноду описывающую конкретное действие из плана ИИ.
+		/// </summary>
+		private AntAIDebuggerNode CreatePlanNode(AntAIAction aAction, AntAICondition aConditions,
+			AntAICondition aPrevConditions, ref Vector2 aNodePosition)
+		{
+			AntAICondition condCopy = aConditions.Clone();
+			condCopy.name = aAction.name;
+			
+			int numLines;
+			string desc = DescribePlanAction(condCopy, aPrevConditions, out numLines);
+
+			GUIStyle style;
+			if (_currentPlan.isSuccess)
+			{
+				style = (aAction.name.Equals(_provider.Logic.CurrentPlan[0])) ? _activePlanStyle : _planStyle;
+			}
+			else
+			{
+				style = (aAction.name.Equals(_provider.Logic.CurrentPlan[0])) ? _activeFailedPlanStyle : _failedPlanStyle;
+			}
+
+			var node = AddNode(desc, 220.0f, CalcHeight(numLines), style, style, ref aNodePosition, false);
+			node.value = aAction.task;
+			node.SetOutput(node.rect.width - 10.0f, node.rect.height * 0.5f);
+			node.SetInput(10.0f, node.rect.height * 0.5f);
+
+			if (_genericNodes.Count > 0)
+			{
+				_genericNodes[_genericNodes.Count - 1].LinkTo(node, new Color(0.3f, 0.7f, 0.4f));
+			}
+
+			_genericNodes.Add(node);
+			return node;
+		}
+
+		/// <summary>
+		/// Обновляет ноду описывающую конкретное действие из плана ИИ.
+		/// </summary>
+		private void UpdatePlanNode(AntAIAction aAction, AntAICondition aConditions, 
+			AntAICondition aPrevConditions, AntAIDebuggerNode aNode)
+		{
+			AntAICondition condCopy = aConditions.Clone();
+			condCopy.name = aAction.name;
+			aNode.value = aAction.task;
+
+			int numLines;
+			aNode.title = DescribePlanAction(condCopy, aPrevConditions, out numLines);
+			aNode.rect.height = CalcHeight(numLines);
+
+			if (_currentPlan.isSuccess)
+			{
+				aNode.defaultNodeStyle = (aAction.name.Equals(_provider.Logic.CurrentPlan[0])) ? _activePlanStyle : _planStyle;
+			}
+			else
+			{
+				aNode.defaultNodeStyle = (aAction.name.Equals(_provider.Logic.CurrentPlan[0])) ? _activeFailedPlanStyle : _failedPlanStyle;
+			}
+		}
+
+		/// <summary>
+		/// Рассчитывает высоту ноды исходя из количества строк.
+		/// </summary>
+		private float CalcHeight(int numLines)
+		{
+			return 13.0f * (float) (numLines + 1) + 14.0f;
+		}
+
+		// ---
 
 		private AntAIDebuggerNode AddNode(string aText, float aWidth, float aHeight, 
-			GUIStyle aStyle, GUIStyle aActiveStyle, ref Vector2 aPosition)
+			GUIStyle aStyle, GUIStyle aActiveStyle, ref Vector2 aPosition, bool aAddToList = true)
 		{
 			AntAIDebuggerNode node = new AntAIDebuggerNode(aPosition.x, aPosition.y, aWidth, aHeight, aStyle, aActiveStyle);
 			node.title = aText;
-			_nodes.Add(node);
+			if (aAddToList)
+			{
+				_nodes.Add(node);
+			}
 			aPosition.x += aWidth;
 			return node;
+		}
+
+		private void DrawTitles(List<TitleData> aList)
+		{
+			TitleData t;
+			for (int i = 0, n = aList.Count; i < n; i++)
+			{
+				t = aList[i];
+				GUI.Label(new Rect(t.rect.x + _totalDrag.x, t.rect.y + _totalDrag.y, 
+					t.rect.width, t.rect.height), t.text, _titleStyle);
+			}
+		}
+
+		private void DrawLinks(List<AntAIDebuggerNode> aList, bool aVertical)
+		{
+			AntAIDebuggerNode node;
+			for (int i = 0, n = aList.Count; i < n; i++)
+			{
+				node = aList[i];
+				if (node.isActive && node.links.Count > 0)
+				{
+					for (int j = 0, nj = node.links.Count; j < nj; j++)
+					{
+						if (node.links[j].Key.isActive)
+						{
+							if (aVertical)
+							{
+								AntDrawer.DrawVerticalSolidConnection(node.Output, 
+									node.links[j].Key.Input, node.links[j].Value, 1, 15.0f);
+							}
+							else
+							{
+								AntDrawer.DrawSolidConnection(node.Output, 
+									node.links[j].Key.Input, node.links[j].Value, 1, 15.0f);
+							}
+						}
+					}
+				}
+			}
+		}
+
+		private void DrawCurrentStateLink()
+		{
+			// Реализация линка, что называется "в лоб" между текущим действием и состояним :)
+			if (_genericNodes.Count >= 2)
+			{
+				var gNode = _genericNodes[1];
+				AntAIDebuggerNode sNode;
+				for (int i = 0, n = _nodes.Count; i < n; i++)
+				{
+					sNode = _nodes[i];
+					if (gNode.value.Equals(sNode.value))
+					{
+						AntDrawer.DrawVerticalSolidConnection(
+							new Vector2(gNode.rect.x + gNode.rect.width * 0.5f, gNode.rect.y + 10.0f),
+							new Vector2(sNode.rect.x + gNode.rect.width * 0.5f, sNode.rect.y + sNode.rect.height - 10.0f),
+							Color.gray, -1, 50.0f);
+						break;
+					}
+				}
+			}
+		}
+
+		private void DrawNodes(List<AntAIDebuggerNode> aList)
+		{
+			for (int i = 0, n = aList.Count; i < n; i++)
+			{
+				if (aList[i].isActive)
+				{
+					aList[i].Draw();
+				}
+			}
 		}
 
 		private void DrawGrid(float aCellSize, Color aColor, float aOpacity)
@@ -369,14 +736,21 @@ namespace Anthill.AI
 		{
 			_drag = Vector2.zero;
 			
-			if (_nodes != null)
+			for (int i = 0; i < _nodes.Count; i++)
 			{
-				for (int i = 0; i < _nodes.Count; i++)
+				if (_nodes[i].isActive &&
+					_nodes[i].ProcessEvents(aEvent))
 				{
-					if (_nodes[i].ProcessEvents(aEvent))
-					{
-						return;
-					}
+					return;
+				}
+			}
+
+			for (int i = 0, n = _genericNodes.Count; i < n; i++)
+			{
+				if (_genericNodes[i].isActive && 
+					_genericNodes[i].ProcessEvents(aEvent))
+				{
+					return;
 				}
 			}
 			
@@ -396,11 +770,19 @@ namespace Anthill.AI
 			_totalDrag += aDelta;
 			_drag = aDelta;
 
-			if (_nodes != null)
+			for (int i = 0, n = _nodes.Count; i < n; i++)
 			{
-				for (int i = 0, n = _nodes.Count; i < n; i++)
+				if (_nodes[i].isActive)
 				{
 					_nodes[i].Drag(aDelta);
+				}
+			}
+
+			for (int i = 0, n = _genericNodes.Count; i < n; i++)
+			{
+				if (_genericNodes[i].isActive)
+				{
+					_genericNodes[i].Drag(aDelta);
 				}
 			}
 
