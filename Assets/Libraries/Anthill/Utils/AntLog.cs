@@ -101,7 +101,7 @@ namespace Anthill.Utils
 		public static string Report(string aClassName, string aFormat, params object[] aArgs)
 		{
 			object[] args = new object[aArgs.Length + 1];
-			args[0] = string.Concat("<color=orange>", aClassName, ":</color> ", aFormat);
+			args[0] = string.Concat("<color=orange>[", aClassName, "]</color> ", aFormat);
 			for (int i = 0, n = aArgs.Length; i < n; i++)
 			{
 				args[i + 1] = aArgs[i];
