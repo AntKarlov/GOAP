@@ -105,13 +105,13 @@ namespace Anthill.AI
 					actionName = EditorGUILayout.TextField("Action", action.name);
 					if (!string.Equals(actionName, action.name))
 					{
-						if (string.Equals(action.name, action.task))
+						if (string.Equals(action.name, action.state))
 						{
-							action.task = actionName;
+							action.state = actionName;
 						}
 						action.name = actionName;
 					}
-					action.task = EditorGUILayout.TextField("Task", action.task);
+					action.state = EditorGUILayout.TextField("State", action.state);
 					action.cost = EditorGUILayout.IntField("Cost", action.cost);
 					
 					GUILayout.Space(10.0f);

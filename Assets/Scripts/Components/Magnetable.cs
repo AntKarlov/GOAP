@@ -11,6 +11,7 @@ namespace Game.Components
 	{
 		[Tooltip("Тип вещи.")]
 		public ItemKind kind = ItemKind.None;
+		
 		[Tooltip("Модификатор влияющий на силу притяжения.")]
 		public float forceScale = 1.0f;
 

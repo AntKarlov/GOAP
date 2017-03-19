@@ -38,24 +38,24 @@ namespace Game.Systems
 						ai.sense.GetConditions(ai.logic, ai.conditions);
 					}
 
-					if (ai.currentTask == null)
+					if (ai.currentState == null)
 					{
 						// Если текущей задачи нет, то ставим задачу по умолчанию.
-						ai.SetDefaultTask();
+						ai.SetDefaultState();
 					}
 					else
 					{
-						if (ai.currentTask.IsFinished(ai.logic, ai.conditions))
+						if (ai.currentState.IsFinished(ai.logic, ai.conditions))
 						{
 							// Если текущая задача завершена или была прервана,
 							// то выбираем новую задачу и принудительно устанавливаем её.
-							ai.SetTask(ai.logic.SelectNewTask(ai.conditions), true);
+							ai.SetState(ai.logic.SelectNewState(ai.conditions), true);
 						}
 						else
 						{
 							// По ходу выполнения текущей задачи, обдумываем ситуацию
 							// и меняем задачу если она отличается от текущей.
-							ai.SetTask(ai.logic.SelectNewTask(ai.conditions));
+							ai.SetState(ai.logic.SelectNewState(ai.conditions));
 						}
 					}
 
@@ -63,7 +63,7 @@ namespace Game.Systems
 				}
 
 				// Обновляем текущуюу задачу независимо от всего остального.
-				ai.currentTask.Update(aDeltaTime);
+				ai.currentState.Update(aDeltaTime);
 			}
 		}
 	}

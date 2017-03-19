@@ -25,9 +25,7 @@ namespace Game.Components
 		private Rigidbody2D _body;
 		private TankTowerControl _tower;
 
-		// -----------------------------------------------------
-		// Unity callbacks
-		// -----------------------------------------------------
+		#region Unity Callbacks
 
 		private void Awake()
 		{
@@ -35,10 +33,9 @@ namespace Game.Components
 			_body = GetComponent<Rigidbody2D>();
 			_tower = GetComponentInChildren<TankTowerControl>();
 		}
-
-		// -----------------------------------------------------
-		// Public Methods
-		// -----------------------------------------------------
+		
+		#endregion
+		#region Public Methods
 
 		public void Steering(float aDir, float aDeltaTime)
 		{
@@ -76,9 +73,8 @@ namespace Game.Components
  			_tower.Rotation = Quaternion.Slerp(_tower.Rotation, q, aDeltaTime);
 		}
 
-		// -----------------------------------------------------
-		// Getters/Setters
-		// -----------------------------------------------------
+		#endregion
+		#region Getters / Setters
 
 		public Vector3 Position
 		{
@@ -94,5 +90,7 @@ namespace Game.Components
 		{
 			get { return _tower; }
 		}
+
+		#endregion
 	}
 }

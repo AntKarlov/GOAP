@@ -42,7 +42,7 @@ MonoBehaviour:
     serialId: 12
   actions:
   - name: ScoutWithGun
-    task: Scout
+    state: Scout
     cost: 0
     isOpened: 0
     pre:
@@ -54,7 +54,7 @@ MonoBehaviour:
     - id: 2
       value: 1
   - name: ScoutWithBomb
-    task: Scout
+    state: Scout
     cost: 0
     isOpened: 0
     pre:
@@ -64,7 +64,7 @@ MonoBehaviour:
     - id: 2
       value: 1
   - name: PickupBomb
-    task: PickupBomb
+    state: PickupBomb
     cost: 0
     isOpened: 0
     pre:
@@ -80,7 +80,7 @@ MonoBehaviour:
     - id: 4
       value: 0
   - name: PickupBombWithGun
-    task: PickupBomb
+    state: PickupBomb
     cost: 0
     isOpened: 0
     pre:
@@ -100,7 +100,7 @@ MonoBehaviour:
     - id: 4
       value: 0
   - name: SearchGun
-    task: SearchGun
+    state: SearchGun
     cost: 1
     isOpened: 0
     pre:
@@ -114,7 +114,7 @@ MonoBehaviour:
     - id: 5
       value: 1
   - name: PickupGun
-    task: PickupGun
+    state: PickupGun
     cost: 0
     isOpened: 0
     pre:
@@ -128,7 +128,7 @@ MonoBehaviour:
     - id: 5
       value: 0
   - name: SearchAmmo
-    task: SearchAmmo
+    state: SearchAmmo
     cost: 2
     isOpened: 0
     pre:
@@ -140,7 +140,7 @@ MonoBehaviour:
     - id: 6
       value: 1
   - name: PickupAmmo
-    task: PickupAmmo
+    state: PickupAmmo
     cost: 0
     isOpened: 0
     pre:
@@ -156,7 +156,7 @@ MonoBehaviour:
     - id: 6
       value: 0
   - name: Approach
-    task: Approach
+    state: Approach
     cost: 0
     isOpened: 0
     pre:
@@ -168,7 +168,7 @@ MonoBehaviour:
     - id: 11
       value: 1
   - name: Aim
-    task: Aim
+    state: Aim
     cost: 1
     isOpened: 0
     pre:
@@ -182,7 +182,7 @@ MonoBehaviour:
     - id: 12
       value: 1
   - name: Shot
-    task: Shot
+    state: Shot
     cost: 1
     isOpened: 0
     pre:
@@ -198,7 +198,7 @@ MonoBehaviour:
     - id: 12
       value: 0
   - name: DetonateBomb
-    task: DetonateBomb
+    state: DetonateBomb
     cost: 3
     isOpened: 0
     pre:
@@ -216,7 +216,7 @@ MonoBehaviour:
     - id: 8
       value: 0
   - name: SearchHeal
-    task: SearchHeal
+    state: SearchHeal
     cost: 4
     isOpened: 0
     pre:
@@ -228,7 +228,7 @@ MonoBehaviour:
     - id: 10
       value: 1
   - name: PickupHeal
-    task: PickupHeal
+    state: PickupHeal
     cost: 0
     isOpened: 0
     pre:
@@ -242,7 +242,7 @@ MonoBehaviour:
     - id: 8
       value: 0
   - name: <Unnamed>
-    task: <Unnamed>
+    state: <Unnamed>
     cost: 0
     isOpened: 1
     pre:
@@ -251,7 +251,7 @@ MonoBehaviour:
     post: []
   goals:
   - name: KillEmAll
-    isOpened: 0
+    isOpened: 1
     conditions:
     - id: 7
       value: 0

@@ -16,7 +16,7 @@ namespace Anthill.AI
 		public List<AntAICondition> goals = new List<AntAICondition>();
 
 		#if UNITY_EDITOR
-		public AntAICondition debugConditions; // Using for debugger only.
+		public AntAICondition debugConditions; // Used for AI Debugger only.
 		#endif
 
 		public void LoadScenario(AntAIScenario aScenario)
@@ -31,7 +31,7 @@ namespace Anthill.AI
 			{
 				scenarioAction = aScenario.actions[i];
 				action = GetAction(scenarioAction.name);
-				action.task = scenarioAction.task;
+				action.state = scenarioAction.state;
 				action.cost = scenarioAction.cost;
 
 				// AntLog.Trace("Action: {0}", action.name);
@@ -110,14 +110,14 @@ namespace Anthill.AI
 			return false;
 		}
 
-		public void SetTask(string aActionName, string aTaskName)
+		public void SetState(string aActionName, string aStateName)
 		{
-			FindAction(aActionName).task = aTaskName;
+			FindAction(aActionName).state = aStateName;
 		}
 
-		public string GetTask(string aActionName)
+		public string GetState(string aActionName)
 		{
-			return FindAction(aActionName).task;
+			return FindAction(aActionName).state;
 		}
 
 		public string NameIt(bool[] aBits)
@@ -152,8 +152,8 @@ namespace Anthill.AI
 			for (int i = 0, n = actions.Count; i < n; i++)
 			{
 				action = actions[i];
-				result.Append(string.Format("Action: '{0}' Task: '{1}' Cost: {2}\n", 
-					action.name, action.task, action.cost));
+				result.Append(string.Format("Action: '{0}' State: '{1}' Cost: {2}\n", 
+					action.name, action.state, action.cost));
 				result.Append("  Preconditions:\n");
 				for (int j = 0; j < MAX_ATOMS; j++)
 				{

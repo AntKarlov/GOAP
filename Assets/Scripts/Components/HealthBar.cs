@@ -14,9 +14,7 @@ namespace Game.Components
 		private float _maxHP;
 		private float _hp;
 
-		// -----------------------------------------------------
-		// Unity Callbacks
-		// -----------------------------------------------------
+		#region Unity Callbacks
 
 		private void Awake()
 		{
@@ -25,9 +23,8 @@ namespace Game.Components
 			_sprite = GetComponent<SpriteRenderer>();
 		}
 
-		// -----------------------------------------------------
-		// Public Methods
-		// -----------------------------------------------------
+		#endregion
+		#region Public Methods
 
 		public void UpdateVisual()
 		{
@@ -42,9 +39,8 @@ namespace Game.Components
 			DestroyObject(this.gameObject);
 		}
 
-		// -----------------------------------------------------
-		// Getters/Setters
-		// -----------------------------------------------------
+		#endregion
+		#region Getters/Setters
 
 		public Vector3 Position
 		{
@@ -77,5 +73,7 @@ namespace Game.Components
 				UpdateVisual();
 			}
 		}
+
+		#endregion
 	}
 }

@@ -7,6 +7,7 @@ namespace Game.Components
 	{
 		[Tooltip("Префаб танка который будет заспавнен этим спавнером.")]
 		public GameObject tankPrefab;
+		
 		[Tooltip("Задержка перед спавном танка после его гибили.")]
 		public float spawnDelay = 5.0f;
 
@@ -15,7 +16,7 @@ namespace Game.Components
 		public float Delay { get; set; }
 
 		private Transform _t;
-
+		
 		private void Awake()
 		{
 			_t = GetComponent<Transform>();

@@ -7,8 +7,10 @@ namespace Game.Components
 	{
 		[Tooltip("Префаб пули.")]
 		public GameObject bulletPrefab;
+
 		[Tooltip("Расстояние от центра на котором будет создаваться пуля.")]
 		public float bulletPosition = 0.25f;
+
 		[Tooltip("Скорость пули.")]
 		public float bulletSpeed = 1.0f;
 
@@ -18,9 +20,7 @@ namespace Game.Components
 		private int _ammoCount;
 		private Transform _t;
 
-		// -----------------------------------------------------
-		// Unity Callbacks
-		// -----------------------------------------------------
+		#region Unity Callbacks
 
 		private void Awake()
 		{
@@ -29,9 +29,8 @@ namespace Game.Components
 			_actor.GotoAndStop(1);
 		}
 
-		// -----------------------------------------------------
-		// Private Methods
-		// -----------------------------------------------------
+		#endregion
+		#region Private Methods
 
 		private void UpdateVisual()
 		{
@@ -52,9 +51,8 @@ namespace Game.Components
 			}
 		}
 
-		// -----------------------------------------------------
-		// Getters/Setters
-		// -----------------------------------------------------
+		#endregion
+		#region Getters/Setters
 
 		public float Angle
 		{
@@ -103,5 +101,7 @@ namespace Game.Components
 				UpdateVisual();
 			}
 		}
+
+		#endregion
 	}
 }

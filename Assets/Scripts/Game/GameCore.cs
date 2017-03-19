@@ -20,9 +20,7 @@ namespace Game.Core
 		public int RedKills = 0;
 		public int GreenKills = 0;
 
-		// -----------------------------------------------------
-		// Unity callbacks
-		// -----------------------------------------------------
+		#region Unity Callbacks
 
 		private void Start()
 		{
@@ -59,5 +57,7 @@ namespace Game.Core
 			Rect rRect = new Rect(Screen.width - 50.0f, Screen.height - 50.0f, 300.0f, 150.0f);
 			GUI.Label(rRect, string.Format("{0}", GreenKills), style);
 		}
+
+		#endregion
 	}
 }

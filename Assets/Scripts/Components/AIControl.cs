@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using Anthill.AI;
+using Anthill.Utils;
 
 namespace Game.Components
 {
@@ -8,9 +9,9 @@ namespace Game.Components
 	{
 		[NonSerializedAttribute] public ISense sense;
 		[NonSerializedAttribute] public ILogic logic;
-		[NonSerializedAttribute] public AntAITask[] tasks;
-		[NonSerializedAttribute] public AntAITask currentTask;
-		[NonSerializedAttribute] public AntAITask defaultTask;
+		[NonSerializedAttribute] public AntAIState[] states;
+		[NonSerializedAttribute] public AntAIState currentState;
+		[NonSerializedAttribute] public AntAIState defaultState;
 		[NonSerializedAttribute] public AntAICondition conditions;
 		[NonSerializedAttribute] public float updateInterval;
 		[NonSerializedAttribute] public float currentTime;
@@ -21,7 +22,7 @@ namespace Game.Components
 		private void Awake()
 		{
 			conditions = new AntAICondition();
-			currentTask = null;
+			currentState = null;
 			currentTime = 0.0f;
 			active = true;
 		}
@@ -29,61 +30,61 @@ namespace Game.Components
 		#endregion
 		#region Public Methods
 
-		public void DefaultTaskIs(string aTaskName)
+		public void DefaultStateIs(string aStateName)
 		{
-			defaultTask = FindTask(aTaskName);
-			if (defaultTask == null)
+			defaultState = FindState(aStateName);
+			if (defaultState == null)
 			{
-				Debug.LogWarning("[AIControl] Can't set \"" + aTaskName + "\" as default task because it is not existing!");
+				AntLog.Report("[AIControl]", "Can't set \"{0}\" as default State because it is not existing!", aStateName);
 			}
 		}
 
-		public void SetDefaultTask()
+		public void SetDefaultState()
 		{
-			if (currentTask != null)
+			if (currentState != null)
 			{
-				currentTask.Stop();
+				currentState.Stop();
 			}
 
-			if (defaultTask != null)
+			if (defaultState != null)
 			{
-				currentTask = defaultTask;
-				currentTask.Reset();
-				currentTask.Start();
+				currentState = defaultState;
+				currentState.Reset();
+				currentState.Start();
 			}
 			else
 			{
-				Debug.LogWarning("[AIControl] Default task is not defined!");
+				AntLog.Report("[AIControl]", "Default State is not defined!");
 			}
 		}
 		
-		public void SetTask(string aTaskName, bool aForce = false)
+		public void SetState(string aStateName, bool aForce = false)
 		{
-			if (aForce || !string.Equals(currentTask.name, aTaskName))
+			if (aForce || !string.Equals(currentState.name, aStateName))
 			{
-				if (currentTask != null)
+				if (currentState != null)
 				{
-					currentTask.Stop();
+					currentState.Stop();
 				}
 
-				currentTask = FindTask(aTaskName);
-				if (currentTask != null)
+				currentState = FindState(aStateName);
+				if (currentState != null)
 				{
-					currentTask.Reset();
-					currentTask.Start();
+					currentState.Reset();
+					currentState.Start();
 				}
 				else
 				{
-					Debug.LogWarning("[AIControl] Can't find \"" + aTaskName + "\" task.");
-					SetDefaultTask();
+					AntLog.Report("[AIControl]", "Can't find \"{0}\" state.", aStateName);
+					SetDefaultState();
 				}
 			}
 		}
 
-		public AntAITask FindTask(string aScheduleName)
+		public AntAIState FindState(string aStateName)
 		{
-			int index = Array.FindIndex(tasks, x => string.Equals(x.name, aScheduleName));
-			return (index >= 0 && index < tasks.Length) ? tasks[index] : null;
+			int index = Array.FindIndex(states, x => string.Equals(x.name, aStateName));
+			return (index >= 0 && index < states.Length) ? states[index] : null;
 		}
 
 		#endregion
@@ -94,14 +95,14 @@ namespace Game.Components
 			get { return gameObject.name; }
 		}
 
-		public AntAITask[] Tasks
+		public AntAIState[] States
 		{
-			get { return tasks; }
+			get { return states; }
 		}
 
-		public AntAITask DefaultTask
+		public AntAIState DefaultState
 		{
-			get { return defaultTask; }
+			get { return defaultState; }
 		}
 
 		public ILogic Logic

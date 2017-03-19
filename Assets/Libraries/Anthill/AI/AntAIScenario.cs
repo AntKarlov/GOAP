@@ -30,7 +30,7 @@ namespace Anthill.AI
 	public class AntAIScenarioAction
 	{
 		public string name;
-		public string task;
+		public string state;
 		public int cost;
 		public bool isOpened;
 		public AntAIScenarioItem[] pre;
@@ -39,7 +39,7 @@ namespace Anthill.AI
 		public AntAIScenarioAction()
 		{
 			name = "<Unnamed>";
-			task = name;
+			state = name;
 			cost = 0;
 			isOpened = true;
 			pre = new AntAIScenarioItem[0];

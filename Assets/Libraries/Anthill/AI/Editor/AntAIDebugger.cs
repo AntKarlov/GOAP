@@ -24,7 +24,7 @@ namespace Anthill.AI
 
 		private GUIStyle _titleStyle;
 		private GUIStyle _nodeStyle;
-		private GUIStyle _taskStyle;
+		private GUIStyle _stateStyle;
 		private GUIStyle _goalStyle;
 		private GUIStyle _activeGoalStyle;
 		private GUIStyle _planStyle;
@@ -68,7 +68,7 @@ namespace Anthill.AI
 			_titleStyle.normal.textColor = Color.gray;
 
 			_nodeStyle = CreateNodeStyle("node0.png");
-			_taskStyle = CreateNodeStyle("node0.png");
+			_stateStyle = CreateNodeStyle("node0.png");
 			_goalStyle = CreateNodeStyle("node1.png");
 			_activeGoalStyle = CreateNodeStyle("node1 on.png");
 			_planStyle = CreateNodeStyle("node0.png");
@@ -191,19 +191,19 @@ namespace Anthill.AI
 			float totalWidth = 0.0f;
 			float totalHeight = 0.0f;
 			int foundCount = 0;
-			bool isDefaultTask;
+			bool isDefaultState;
 
-			AntAITask task;
-			AntAIDebuggerNode taskNode;
+			AntAIState state;
+			AntAIDebuggerNode stateNode;
 			AntAIDebuggerNode actionNode;
-			Vector2 taskPos;
+			Vector2 statePos;
 
-			var unusedTasks = new List<AntAITask>(); // Список задач которые не связаны с действиями.
+			var unusedStates = new List<AntAIState>(); // Список задач которые не связаны с действиями.
 			var toLinkNodes = new List<AntAIDebuggerNode>();
 
-			for (int i = 0, n = _provider.Tasks.Length; i < n; i++)
+			for (int i = 0, n = _provider.States.Length; i < n; i++)
 			{
-				task = _provider.Tasks[i];
+				state = _provider.States[i];
 				toLinkNodes.Clear();
 				foundCount = 0;
 				totalWidth = 0.0f;
@@ -211,7 +211,7 @@ namespace Anthill.AI
 				for (int j = 0, nj = _provider.Logic.Planner.actions.Count; j < nj; j++)
 				{
 					action = _provider.Logic.Planner.actions[j];
-					if (action.task.Equals(task.name))
+					if (action.state.Equals(state.name))
 					{
 						int id = unusedActions.FindIndex(x => System.Object.ReferenceEquals(x.Key, action));
 						unusedActions[id] = new KeyValuePair<AntAIAction, bool>(action, true);
@@ -229,27 +229,27 @@ namespace Anthill.AI
 				{
 					if (foundCount > 1)
 					{
-						taskPos = new Vector2(aNodePosition.x - totalWidth * 0.75f, aNodePosition.y + totalHeight);
+						statePos = new Vector2(aNodePosition.x - totalWidth * 0.75f, aNodePosition.y + totalHeight);
 					}
 					else
 					{
-						taskPos = new Vector2(aNodePosition.x - totalWidth, aNodePosition.y + totalHeight);
+						statePos = new Vector2(aNodePosition.x - totalWidth, aNodePosition.y + totalHeight);
 					}
 
-					isDefaultTask = System.Object.ReferenceEquals(_provider.DefaultTask, task);
-					taskNode = CreateTaskNode(task, taskPos, isDefaultTask);
-					taskNode.SetInput(taskNode.rect.width * 0.5f, 10.0f);
+					isDefaultState = System.Object.ReferenceEquals(_provider.DefaultState, state);
+					stateNode = CreateStateNode(state, statePos, isDefaultState);
+					stateNode.SetInput(stateNode.rect.width * 0.5f, 10.0f);
 					for (int j = 0, nj = toLinkNodes.Count; j < nj; j++)
 					{
-						toLinkNodes[j].LinkTo(taskNode, new Color(0.3f, 0.7f, 0.4f));
+						toLinkNodes[j].LinkTo(stateNode, new Color(0.3f, 0.7f, 0.4f));
 					}
 
-					totalHeight += taskNode.rect.height;
+					totalHeight += stateNode.rect.height;
 					aMaxHeigth = (totalHeight > aMaxHeigth) ? totalHeight : aMaxHeigth;
 				}
 				else
 				{
-					unusedTasks.Add(task);
+					unusedStates.Add(state);
 				}
 			}
 
@@ -263,23 +263,23 @@ namespace Anthill.AI
 					totalWidth = actionNode.rect.width;
 					totalHeight = actionNode.rect.height;
 
-					taskPos = new Vector2(aNodePosition.x - totalWidth, aNodePosition.y + totalHeight);
-					taskNode = CreateMissingTaskNode(unusedActions[i].Key.task, taskPos);
-					taskNode.SetInput(taskNode.rect.width * 0.5f, 10.0f);
-					actionNode.LinkTo(taskNode, new Color(0.7f, 0.2f, 0.3f));
+					statePos = new Vector2(aNodePosition.x - totalWidth, aNodePosition.y + totalHeight);
+					stateNode = CreateMissingStateNode(unusedActions[i].Key.state, statePos);
+					stateNode.SetInput(stateNode.rect.width * 0.5f, 10.0f);
+					actionNode.LinkTo(stateNode, new Color(0.7f, 0.2f, 0.3f));
 				}
 			}
 
 			// Создаем оставшиеся задачи.
 			totalHeight = 0.0f;
-			taskPos = aNodePosition;
-			for (int i = 0, n = unusedTasks.Count; i < n; i++)
+			statePos = aNodePosition;
+			for (int i = 0, n = unusedStates.Count; i < n; i++)
 			{
-				isDefaultTask = System.Object.ReferenceEquals(_provider.DefaultTask, unusedTasks[i]);
-				taskNode = CreateTaskNode(unusedTasks[i], taskPos, isDefaultTask);
-				taskNode.SetInput(taskNode.rect.width * 0.5f, 10.0f);
-				taskPos.y += taskNode.rect.height;
-				totalHeight += taskNode.rect.height;
+				isDefaultState = System.Object.ReferenceEquals(_provider.DefaultState, unusedStates[i]);
+				stateNode = CreateStateNode(unusedStates[i], statePos, isDefaultState);
+				stateNode.SetInput(stateNode.rect.width * 0.5f, 10.0f);
+				statePos.y += stateNode.rect.height;
+				totalHeight += stateNode.rect.height;
 			}
 
 			aMaxHeigth = (totalHeight > aMaxHeigth) ? totalHeight : aMaxHeigth;
@@ -360,9 +360,9 @@ namespace Anthill.AI
 		/// <summary>
 		/// Создает ноду состояния информирующую о том что состояние не найдено.
 		/// </summary>
-		private AntAIDebuggerNode CreateMissingTaskNode(string aTitle, Vector2 aNodePosition)
+		private AntAIDebuggerNode CreateMissingStateNode(string aTitle, Vector2 aNodePosition)
 		{
-			return AddNode(string.Format("<b><color={1}>TASK</color> '<color={2}>{0}</color>'</b>\n\r   Non-existent task!", 
+			return AddNode(string.Format("<b><color={1}>STATE</color> '<color={2}>{0}</color>'</b>\n\r   <color=white>Non-existent state!</color>", 
 				aTitle, _titleColor, _nameColor), 
 				220.0f, 54.0f, _warningNodeStyle, _warningNodeStyle, ref aNodePosition);
 		}
@@ -370,24 +370,24 @@ namespace Anthill.AI
 		/// <summary>
 		/// Создает ноду состояния.
 		/// </summary>
-		private AntAIDebuggerNode CreateTaskNode(AntAITask aTask, Vector2 aNodePosition, bool isDefault)
+		private AntAIDebuggerNode CreateStateNode(AntAIState aState, Vector2 aNodePosition, bool isDefault)
 		{
 			string title;
 			float height = 40.0f;
 			if (isDefault)
 			{
-				title = string.Format("<b><color={1}>TASK</color> '<color={2}>{0}</color>'</b>\n\r   This is Default Task", 
-					aTask.name, _titleColor, _nameColor);
+				title = string.Format("<b><color={1}>STATE</color> '<color={2}>{0}</color>'</b>\n\r   <color=#51a9b0>This is Default state</color>", 
+					aState.name, _titleColor, _nameColor);
 				height += 14.0f;
 			}
 			else
 			{
-				title = string.Format("<b><color={1}>TASK</color> '<color={2}>{0}</color>'</b>", 
-					aTask.name, _titleColor, _nameColor);
+				title = string.Format("<b><color={1}>STATE</color> '<color={2}>{0}</color>'</b>", 
+					aState.name, _titleColor, _nameColor);
 			}
 
-			AntAIDebuggerNode node = AddNode(title, 220.0f, height, _taskStyle, _taskStyle, ref aNodePosition);
-			node.value = aTask.name;
+			AntAIDebuggerNode node = AddNode(title, 220.0f, height, _stateStyle, _stateStyle, ref aNodePosition);
+			node.value = aState.name;
 			return node;
 		}
 
@@ -572,7 +572,7 @@ namespace Anthill.AI
 			}
 
 			var node = AddNode(desc, 220.0f, CalcHeight(numLines), style, style, ref aNodePosition, false);
-			node.value = aAction.task;
+			node.value = aAction.state;
 			node.SetOutput(node.rect.width - 10.0f, node.rect.height * 0.5f);
 			node.SetInput(10.0f, node.rect.height * 0.5f);
 
@@ -593,7 +593,7 @@ namespace Anthill.AI
 		{
 			AntAICondition condCopy = aConditions.Clone();
 			condCopy.name = aAction.name;
-			aNode.value = aAction.task;
+			aNode.value = aAction.state;
 
 			int numLines;
 			aNode.title = DescribePlanAction(condCopy, aPrevConditions, out numLines);

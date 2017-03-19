@@ -8,20 +8,22 @@ namespace Game.Components
 	{
 		[Tooltip("Дистанция/радиус зрения.")]
 		public float radius = 2.0f;
+
 		[Tooltip("Минимальный угол зрения.")]
 		public float lowerLimit = -90.0f;
+
 		[Tooltip("Максимальный угол зрения.")]
 		public float upperLimit = 90.0f;
+
 		[Tooltip("Группа к которой относится данный объект.")]
 		public GroupEnum group = GroupEnum.None;
+
 		[Tooltip("Вражеская группа для данного объекта.")]
 		public GroupEnum enemyGroup = GroupEnum.None;
 
 		private Transform _t;
 
-		// -----------------------------------------------------
-		// Unity Callbacks
-		// -----------------------------------------------------
+		#region Unity Callbacks
 
 		private void Awake()
 		{
@@ -36,9 +38,8 @@ namespace Game.Components
 			}
 		}
 
-		// -----------------------------------------------------
-		// Public Methods
-		// -----------------------------------------------------
+		#endregion
+		#region Public Methods
 
 		public bool IsSee(Vector2 aPoint)
 		{
@@ -58,13 +59,14 @@ namespace Game.Components
 			return false;
 		}
 
-		// -----------------------------------------------------
-		// Gettets/Setters
-		// -----------------------------------------------------
+		#endregion
+		#region Getters / Setters
 
 		public float Angle
 		{
 			get { return _t.rotation.eulerAngles.z; }
 		}
+
+		#endregion
 	}
 }

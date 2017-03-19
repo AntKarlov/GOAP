@@ -15,6 +15,7 @@ namespace Game.Map
 
 		[Tooltip("Определяет расстояние при котором точки карты связываются между собой.")]
 		public float linkRadius = 0.5f;
+
 		[Tooltip("Определяет расстояние между танком и точкой при котором засчитывается прибытие на точку.")]
 		public float approachRadius = 0.4f;
 
@@ -23,9 +24,7 @@ namespace Game.Map
 
 		private List<Vector2> _way;
 
-		// -----------------------------------------------------
-		// Unity Callbacks
-		// -----------------------------------------------------
+		#region Unity Callbacks
 
 		private void Awake()
 		{
@@ -50,9 +49,8 @@ namespace Game.Map
 			}
 		}
 
-		// -----------------------------------------------------
-		// Public Methods
-		// -----------------------------------------------------
+		#endregion
+		#region Public Methods
 
 		public List<Vector2> FindWay(WayPoint aCurrent, WayPoint aGoal)
 		{
@@ -154,9 +152,8 @@ namespace Game.Map
 			return (index >= 0 && index < points.Count) ? points[index] : null;
 		}
 
-		// -----------------------------------------------------
-		// Private Methods
-		// -----------------------------------------------------
+		#endregion
+		#region Private Methods
 
 		private void CreateMap()
 		{
@@ -201,8 +198,10 @@ namespace Game.Map
 			result.Reverse();
 			return result;
 		}
-	}
 
+		#endregion
+	}
+	
 	// -----------------------------------------------------
 	// WayMap Editor
 	// -----------------------------------------------------

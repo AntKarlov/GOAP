@@ -8,19 +8,16 @@ using Game.Nodes;
 namespace Game.AI.BotOne
 {
 	/// <summary>
-	/// В данном классе мы собираем все необходимые состояния мира и состояния самого бота.
-	///
-	/// Для бота может быть использовано произвольное количество органов чувств. Например,
-	/// зрение, ощущения и т.п. Все эти органы желательно реализовывать отдельными компонентами.
-	/// Данный класс помогает реализовать работу с отдельными органами чувств и построить «картинку мира».
+	/// Данный класс является органом чувств для бота. Здесь мы реализуем зрение и ощущение бота.
+	/// На основе зрения и ощущений бота мы обновляем его "картину мира" (WORLD STATE).
 	/// </summary>
 	public class BotSense : ISense
 	{
 		public TankControl control; // Управление танком.
 		public Backboard backboard; // Память танка.
-		public Health health; // Здоровье.
-		public Vision vision; // Зрение танка.
-		public Sensor sensor; // Сенсор танка.
+		public Health health;       // Здоровье.
+		public Vision vision;       // Зрение танка.
+		public Sensor sensor;       // Сенсор танка.
 
 		private AntNodeList<VisualNode> _visualNodes;
 

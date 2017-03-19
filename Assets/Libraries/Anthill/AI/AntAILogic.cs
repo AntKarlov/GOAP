@@ -18,15 +18,15 @@ namespace Anthill.AI
 
 		#region ILogic Implementation
 
-		public virtual string SelectNewTask(AntAICondition aConditions)
+		public virtual string SelectNewState(AntAICondition aConditions)
 		{
 			string newState = "";
 			_planner.MakePlan(ref _currentPlan, aConditions, _currentGoal);
 			if (_currentPlan.isSuccess)
 			{
-				// Берем первое действие из составленного плана.
+				// Берем первое действие из плана.
 				string actionName = _planner.GetAction(_currentPlan[0]).name;
-				newState = _planner.GetTask(actionName);
+				newState = _planner.GetState(actionName);
 				
 				// Отладочный вывод плана в консоль.
 				//if (_outputPlan)
