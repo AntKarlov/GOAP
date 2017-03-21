@@ -4,7 +4,7 @@ using Anthill.Utils;
 namespace Anthill.Animation
 {
 	[RequireComponent(typeof(SpriteRenderer))]
-	[AddComponentMenu("Anthill/AntActor")]
+	[AddComponentMenu("Ant Actor")]
 	public class AntActor : MonoBehaviour
 	{
 		[System.Serializable]
@@ -41,6 +41,7 @@ namespace Anthill.Animation
 		private float _delay;
 
 		#region Unity Calls
+
 		protected virtual void Awake()
 		{
 			_sprite = GetComponent<SpriteRenderer>();
@@ -54,11 +55,6 @@ namespace Anthill.Animation
 			{
 				SwitchAnimation(initialAnimation);
 			}
-		}
-
-		protected virtual void Start()
-		{
-			// ..
 		}
 
 		protected virtual void Update()
@@ -105,23 +101,9 @@ namespace Anthill.Animation
 				}
 			}
 		}
+
 		#endregion
-
-		private void AnimationComplete()
-		{
-			if (loop && loopDelay > 0.0f)
-			{
-				_delay = loopDelay;
-				_isPlaying = false;
-				_isPaused = true;
-			}
-
-			_complete = 1;
-			if (EventAnimationComplete != null)
-			{
-				EventAnimationComplete(this, _currentAnimation.name);
-			}
-		}
+		#region Public Methods
 
 		public void SwitchAnimation(string aAnimationName)
 		{
@@ -191,7 +173,26 @@ namespace Anthill.Animation
 			SetFrame(_currentFrame);
 		}
 
-		protected void SetFrame(float aFrame)
+		#endregion
+		#region Private Methods
+
+		private void AnimationComplete()
+		{
+			if (loop && loopDelay > 0.0f)
+			{
+				_delay = loopDelay;
+				_isPlaying = false;
+				_isPaused = true;
+			}
+
+			_complete = 1;
+			if (EventAnimationComplete != null)
+			{
+				EventAnimationComplete(this, _currentAnimation.name);
+			}
+		}
+
+		private void SetFrame(float aFrame)
 		{
 			if (_currentAnimation.frames != null)
 			{
@@ -204,11 +205,14 @@ namespace Anthill.Animation
 			}
 		}
 
-		protected int RoundFrame(float aFrame)
+		private int RoundFrame(float aFrame)
 		{
 			int i = Mathf.RoundToInt(aFrame);
 			return (i <= 0) ? 0 : (i >= TotalFrames - 1) ? TotalFrames - 1 : i;
 		}
+
+		#endregion
+		#region Getters/Setters
 
 		public bool IsPlaying
 		{
@@ -235,5 +239,7 @@ namespace Anthill.Animation
 		{
 			get { return RoundFrame(_currentFrame); }
 		}
+
+		#endregion
 	}
 }
