@@ -19,11 +19,9 @@ namespace Game.AI.BotOne
 			WayPoint target = WayMap.Current.GetRandomPoint();
 
 			// Извлекаем из памяти последнее положение врага.
-			BackboardData data = _backboard.Find("EnemyVisible");
-			if (data.isValid)
+			if (_blackboard["EnemyVisible"].AsBool)
 			{
-				target = WayMap.Current.FindNearestPoint(data.position);
-				_backboard.Remove(data);
+				target = WayMap.Current.FindNearestPoint(_blackboard["EnemyVisible_Pos"].AsVector2);
 			}
 			
 			// Строим маршрут.

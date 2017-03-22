@@ -18,12 +18,11 @@ namespace Game.AI.BotOne
 			base.Start();
 			WayPoint target = WayMap.Current.GetRandomPoint();
 
-			// Проверяем в памяти, может ранее доводилось видеть пушку!?
-			BackboardData data = _backboard.Find("GunInlineOfSight");
-			if (data.isValid)
+			// Если доводилось видеть раньше патроны, то пробуем сгонять туда где их видели.
+			if (_blackboard["GunInlineOfSight"].AsBool)
 			{
-				target = WayMap.Current.FindNearestPoint(data.position);
-				_backboard.Remove(data);
+				target = WayMap.Current.FindNearestPoint(_blackboard["GunInlineOfSight_Pos"].AsVector2);
+				_blackboard["GunInlineOfSight"].AsBool = false;
 			}
 
 			// Строим маршрут.

@@ -5,9 +5,7 @@ using Game.Nodes;
 namespace Game.Systems
 {
 	/// <summary>
-	/// Данная система отвечает за работу Ai (мозгов) для ботов.
-	/// Система занимается обновлением состояний, обновлением текущего
-	/// набора действий и выбором нового набора действий.
+	/// Данная система отвечает за работу AI.
 	/// </summary>
 	public class AIControlSystem : AntSystem
 	{
@@ -32,38 +30,11 @@ namespace Game.Systems
 				ai.currentTime -= aDeltaTime;
 				if (ai.currentTime <= 0.0f)
 				{
-					if (ai.active)
-					{
-						// Собираем информацию о текущем состоянии игрового мира.
-						ai.sense.GetConditions(ai.logic, ai.conditions);
-					}
-
-					if (ai.currentState == null)
-					{
-						// Если текущей задачи нет, то ставим задачу по умолчанию.
-						ai.SetDefaultState();
-					}
-					else
-					{
-						if (ai.currentState.IsFinished(ai.logic, ai.conditions))
-						{
-							// Если текущая задача завершена или была прервана,
-							// то выбираем новую задачу и принудительно устанавливаем её.
-							ai.SetState(ai.logic.SelectNewState(ai.conditions), true);
-						}
-						else
-						{
-							// По ходу выполнения текущей задачи, обдумываем ситуацию
-							// и меняем задачу если она отличается от текущей.
-							ai.SetState(ai.logic.SelectNewState(ai.conditions));
-						}
-					}
-
+					ai.Agent.Think();
 					ai.currentTime = ai.updateInterval;
 				}
 
-				// Обновляем текущуюу задачу независимо от всего остального.
-				ai.currentState.Update(aDeltaTime);
+				ai.Agent.UpdateState(aDeltaTime);
 			}
 		}
 	}

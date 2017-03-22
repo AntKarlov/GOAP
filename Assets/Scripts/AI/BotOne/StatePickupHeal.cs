@@ -20,11 +20,9 @@ namespace Game.AI.BotOne
 			WayPoint target = WayMap.Current.GetRandomPoint();
 
 			// Бежим к лечилке!
-			BackboardData data = _backboard.Find("HealInlineOfSight");
-			if (data.isValid)
+			if (_blackboard["HealInlineOfSight"].AsBool)
 			{
-				target = WayMap.Current.FindNearestPoint(data.position);
-				_backboard.Remove(data);
+				target = WayMap.Current.FindNearestPoint(_blackboard["HealInlineOfSight_Pos"].AsVector2);
 			}
 			
 			// Строим маршрут.

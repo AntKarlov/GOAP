@@ -29,15 +29,20 @@ namespace Game.AI.BotOne
 			// Настраиваем ИИ.
 			var control = GetComponent<AIControl>();
 			control.updateInterval = updateInterval;
+
+			// Создаем AIAgent.
+			// Его следует создавать именно здесь, т.к. не известно какой 
+			// Awake возникнет первым: в AIControl или текущий.
+			control.Agent = new AntAIAgent();
 			
 			// Обертка для всех «органов чувств».
-			control.sense = new BotSense(gameObject);
+			control.Agent.sense = new BotSense(gameObject);
 
 			// Обертка для принятия решений (сценарий поведения).
-			control.logic = new AntAILogic(scenario);
+			control.Agent.planner.LoadScenario(scenario);
 
 			// Регистриуем возможные состояния.
-			control.states = new AntAIState[] 
+			control.Agent.states = new AntAIState[] 
 			{
 				new StateIdle(gameObject),
 				new StateSearchGun(gameObject),
@@ -54,7 +59,8 @@ namespace Game.AI.BotOne
 				new StateDetonateBomb(gameObject)
 			};
 
-			control.DefaultStateIs("Idle");
+			control.Agent.DefaultStateIs("Idle");
+			control.Agent.SetGoal("KillEmAll");
 		}
 	}
 }

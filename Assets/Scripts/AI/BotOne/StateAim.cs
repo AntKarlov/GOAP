@@ -11,23 +11,23 @@ namespace Game.AI.BotOne
 	public class StateAim : AntAIState
 	{
 		private TankControl _control;
-		private Backboard _backboard;
+		private AntAIBlackboard _blackboard;
 		private float _targetAngle;
 
 		public StateAim(GameObject aObject) : base("Aim")
 		{
 			_control = aObject.GetComponent<TankControl>();
-			_backboard = aObject.GetComponent<Backboard>();
+			_blackboard = aObject.GetComponent<AntAIBlackboard>();
 			_targetAngle = 0.0f;
 		}
 
 		public override void Start()
 		{
 			// Считываем из памяти информацию о положении врага.
-			BackboardData data = _backboard.Find("EnemyVisible");
-			if (data.isValid)
+			if (_blackboard["EnemyVisible"].AsBool)
 			{
-				_targetAngle = AntMath.AngleDeg((Vector2) _control.Position, data.position);
+				_targetAngle = AntMath.AngleDeg((Vector2) _control.Position, 
+					_blackboard["EnemyVisible_Pos"].AsVector2);
 			}
 		}
 

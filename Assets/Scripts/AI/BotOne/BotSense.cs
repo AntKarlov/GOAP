@@ -8,29 +8,29 @@ using Game.Nodes;
 namespace Game.AI.BotOne
 {
 	/// <summary>
-	/// Данный класс является органом чувств для бота. Здесь мы реализуем зрение и ощущение бота.
-	/// На основе зрения и ощущений бота мы обновляем его "картину мира" (WORLD STATE).
+	/// Данный класс реализует органы чувств для бота: ощущения и зрение.
+	/// На основе органов чувств мы обновляем "картину мира" (WORLD STATE).
 	/// </summary>
 	public class BotSense : ISense
 	{
-		public TankControl control; // Управление танком.
-		public Backboard backboard; // Память танка.
-		public Health health;       // Здоровье.
-		public Vision vision;       // Зрение танка.
-		public Sensor sensor;       // Сенсор танка.
+		public TankControl control;        // Управление танком.
+		public AntAIBlackboard blackboard; // Память танка.
+		public Health health;              // Здоровье.
+		public Vision vision;              // Зрение танка.
+		public Sensor sensor;              // Сенсор танка.
 
 		private AntNodeList<VisualNode> _visualNodes;
 
 		public BotSense(GameObject aObject)
 		{
 			control = aObject.GetComponent<TankControl>();
-			backboard = aObject.GetComponent<Backboard>();
+			blackboard = aObject.GetComponent<AntAIBlackboard>();
 			health = aObject.GetComponent<Health>();
 			vision = aObject.GetComponent<Vision>();
 			sensor = aObject.GetComponent<Sensor>();
 		}
 
-		public void GetConditions(ILogic aLogic, AntAICondition aConditions)
+		public void GetConditions(AntAIAgent aAgent, AntAICondition aWorldState)
 		{
 			// Получаем список всех объектов которые необходимо отслеживать.
 			if (_visualNodes == null)
@@ -40,13 +40,13 @@ namespace Game.AI.BotOne
 
 			// 1. Обновляем информацию о себе.
 			// -------------------------------
-			aConditions.Set(aLogic.Planner, "ArmedWithGun", control.Tower.HasGun);
-			aConditions.Set(aLogic.Planner, "ArmedWithBomb", control.Tower.HasBomb);
-			aConditions.Set(aLogic.Planner, "HasAmmo", control.Tower.HasAmmo);
-			aConditions.Set(aLogic.Planner, "Injured", (health.HP != health.maxHP));
-			aConditions.Set(aLogic.Planner, "EnemyAlive", true); // todo
-			aConditions.Set(aLogic.Planner, "Alive", (health.HP > 0.0f));
-			aConditions.Set(aLogic.Planner, "HasObstacle", sensor.HasObstacle);
+			aWorldState.Set(aAgent.planner, "ArmedWithGun", control.Tower.HasGun);
+			aWorldState.Set(aAgent.planner, "ArmedWithBomb", control.Tower.HasBomb);
+			aWorldState.Set(aAgent.planner, "HasAmmo", control.Tower.HasAmmo);
+			aWorldState.Set(aAgent.planner, "Injured", (health.HP != health.maxHP));
+			aWorldState.Set(aAgent.planner, "EnemyAlive", true); // Наш враг всегда жив, потому что респавнится.
+			aWorldState.Set(aAgent.planner, "Alive", (health.HP > 0.0f));
+			aWorldState.Set(aAgent.planner, "HasObstacle", sensor.HasObstacle);
 
 			if (sensor.HasObstacle)
 			{
@@ -56,12 +56,12 @@ namespace Game.AI.BotOne
 			// 2. Обрабатываем зрение.
 			// -----------------------
 			// Сбрасываем состояние всех возможных значений зрения.
-			aConditions.Set(aLogic.Planner, "NearEnemy", false);
-			aConditions.Set(aLogic.Planner, "EnemyVisible", false);
-			aConditions.Set(aLogic.Planner, "GunInlineOfSight", false);
-			aConditions.Set(aLogic.Planner, "AmmoInlineOfSight", false);
-			aConditions.Set(aLogic.Planner, "BombInlineOfSight", false);
-			aConditions.Set(aLogic.Planner, "HealInlineOfSight", false);
+			aWorldState.Set(aAgent.planner, "NearEnemy", false);
+			aWorldState.Set(aAgent.planner, "EnemyVisible", false);
+			aWorldState.Set(aAgent.planner, "GunInlineOfSight", false);
+			aWorldState.Set(aAgent.planner, "AmmoInlineOfSight", false);
+			aWorldState.Set(aAgent.planner, "BombInlineOfSight", false);
+			aWorldState.Set(aAgent.planner, "HealInlineOfSight", false);
 
 			VisualNode visual;
 			// Перебираем все объекты которые можно просматривать.
@@ -74,20 +74,16 @@ namespace Game.AI.BotOne
 					// Если объект попадает в область зрения.
 					if (vision.IsSee(visual.entity.Position))
 					{
-						// Записываем его в память.
-						backboard.AddData(new BackboardData() {
-							conditionName = visual.Visual.conditionName,
-							position = visual.entity.Position,
-							isValid = true
-						});
+						blackboard[visual.Visual.conditionName].AsBool = true;
+						blackboard[string.Concat(visual.Visual.conditionName, "_Pos")].AsVector2 = visual.entity.Position;
 
 						// Отмечаем что видим.
-						aConditions.Set(aLogic.Planner, visual.Visual.conditionName, true);
+						aWorldState.Set(aAgent.planner, visual.Visual.conditionName, true);
 
 						if (vision.enemyGroup == visual.Visual.group &&
 							AntMath.Distance(control.Position, visual.entity.Position) < 1.5f)
 						{
-							aConditions.Set(aLogic.Planner, "NearEnemy", true);
+							aWorldState.Set(aAgent.planner, "NearEnemy", true);
 						}
 					}
 				}
@@ -95,18 +91,17 @@ namespace Game.AI.BotOne
 
 			// 3. Обрабатываем наведение пушки на врага.
 			// -----------------------------------------
-			aConditions.Set(aLogic.Planner, "EnemyLinedUp", false);
-			if (aConditions.Has(aLogic.Planner, "EnemyVisible") && control.Tower.HasGun)
+			aWorldState.Set(aAgent.planner, "EnemyLinedUp", false);
+			if (aWorldState.Has(aAgent.planner, "EnemyVisible") && control.Tower.HasGun)
 			{
-				BackboardData data = backboard.Find("EnemyVisible");
-				if (data.isValid)
+				if (blackboard["EnemyVisible"].AsBool)
 				{
-					float angle = AntMath.AngleDeg((Vector2) control.Position, data.position);
+					float angle = AntMath.AngleDeg((Vector2) control.Position, blackboard["EnemyVisible_Pos"].AsVector2);
 					if (AntMath.Equal(AntMath.Angle(control.Tower.Angle), AntMath.Angle(angle), 10.0f))
 					{
-						aConditions.Set(aLogic.Planner, "EnemyLinedUp", true);
+						aWorldState.Set(aAgent.planner, "EnemyLinedUp", true);
 					}
-				}	
+				}
 			}
 		}
 	}

@@ -49,7 +49,6 @@ GameObject:
   - component: {fileID: 114391000336603156}
   - component: {fileID: 114498770290638972}
   - component: {fileID: 114240433162086130}
-  - component: {fileID: 114728936941323928}
   - component: {fileID: 114430015241402944}
   - component: {fileID: 114857352772317850}
   m_Layer: 12
@@ -221,17 +220,6 @@ MonoBehaviour:
   upperLimit: 65
   group: 3
   enemyGroup: 2
---- !u!114 &114728936941323928
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1442153784927384}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 240105d0e5c314f6681b9931fa7e9e68, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114803282204326626
 MonoBehaviour:
   m_ObjectHideFlags: 1

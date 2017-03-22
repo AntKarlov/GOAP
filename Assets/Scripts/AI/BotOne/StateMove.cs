@@ -19,7 +19,7 @@ namespace Game.AI.BotOne
 	public class StateMove : AntAIState
 	{
 		protected TankControl _control;
-		protected Backboard _backboard;
+		protected AntAIBlackboard _blackboard;
 		protected Magnet _magnet;
 		protected List<Vector2> _way;
 		protected int _wayIndex;
@@ -32,7 +32,7 @@ namespace Game.AI.BotOne
 		public StateMove(GameObject aObject, string aStateName) : base(aStateName)
 		{
 			_control = aObject.GetComponent<TankControl>();
-			_backboard = aObject.GetComponent<Backboard>();
+			_blackboard = aObject.GetComponent<AntAIBlackboard>();
 			_magnet = aObject.GetComponent<Magnet>();
 		}
 

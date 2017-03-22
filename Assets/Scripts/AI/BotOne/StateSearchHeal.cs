@@ -18,12 +18,10 @@ namespace Game.AI.BotOne
 			base.Start();
 			WayPoint target = WayMap.Current.GetRandomPoint();
 
-			// Проверяем в памяти, может ранее доводилось видеть патроны!?
-			BackboardData data = _backboard.Find("HealInlineOfSight");
-			if (data.isValid)
+			if (_blackboard["HealInlineOfSight"].AsBool)
 			{
-				target = WayMap.Current.FindNearestPoint(data.position);
-				_backboard.Remove(data);
+				target = WayMap.Current.FindNearestPoint(_blackboard["HealInlineOfSight_Pos"].AsVector2);
+				_blackboard["HealInlineOfSight"].AsBool = false;
 			}
 			
 			// Строим маршрут.

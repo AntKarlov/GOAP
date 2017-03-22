@@ -20,11 +20,9 @@ namespace Game.AI.BotOne
 			WayPoint target = WayMap.Current.GetRandomPoint();
 
 			// Бежим к пушке!
-			BackboardData data = _backboard.Find("GunInlineOfSight");
-			if (data.isValid)
+			if (_blackboard["GunInlineOfSight"].AsBool)
 			{
-				target = WayMap.Current.FindNearestPoint(data.position);
-				_backboard.Remove(data);
+				target = WayMap.Current.FindNearestPoint(_blackboard["GunInlineOfSight_Pos"].AsVector2);
 			}
 			
 			// Строим маршрут.

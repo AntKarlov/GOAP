@@ -18,12 +18,11 @@ namespace Game.AI.BotOne
 			base.Start();
 			WayPoint target = WayMap.Current.GetRandomPoint();
 
-			// Проверяем в памяти, может ранее доводилось видеть врага!?
-			BackboardData data = _backboard.Find("EnemyVisible");
-			if (data.isValid)
+			// Если доводилось видеть ранее врага, то пробуем сгонять туда где его видели.
+			if (_blackboard["EnemyVisible"].AsBool)
 			{
-				target = WayMap.Current.FindNearestPoint(data.position);
-				_backboard.Remove(data);
+				target = WayMap.Current.FindNearestPoint(_blackboard["EnemyVisible_Pos"].AsVector2);
+				_blackboard["EnemyVisible"].AsBool = false;
 			}
 			
 			// Строим маршрут.
