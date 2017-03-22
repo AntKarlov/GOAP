@@ -41,9 +41,9 @@ namespace Anthill.AI
 			_isFinished = false;
 		}
 
-		public bool IsFinished(ILogic aLogic, AntAICondition aConditions)
+		public bool IsFinished(AntAIAgent aAgent, AntAICondition aWorldState)
 		{
-			if (_isFinished || OverlapInterrupts(aLogic.Planner, aConditions))
+			if (_isFinished || OverlapInterrupts(aAgent.planner, aWorldState))
 			{
 				Reset();
 				return true;

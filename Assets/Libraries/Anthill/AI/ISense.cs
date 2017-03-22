@@ -2,6 +2,6 @@ namespace Anthill.AI
 {
 	public interface ISense
 	{
-		void GetConditions(ILogic aLogic, AntAICondition aConditions);
+		void GetConditions(AntAIAgent aAgent, AntAICondition aWorldState);
 	}
 }
