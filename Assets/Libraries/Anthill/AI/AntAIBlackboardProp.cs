@@ -43,7 +43,7 @@ namespace Anthill.AI
 				break;
 
 				case ValueType.Float :
-					result = _floatValue.ToString("00");
+					result = _floatValue.ToString("0.00");
 				break;
 
 				case ValueType.Int :
@@ -55,16 +55,16 @@ namespace Anthill.AI
 				break;
 
 				case ValueType.Vec2 :
-					result = string.Format("{0}, {1}", 
-						_vec2Value.x.ToString(), 
-						_vec2Value.y.ToString());
+					result = string.Concat(
+						_vec2Value.x.ToString("0.00"), ", ",
+						_vec2Value.y.ToString("0.00"));
 				break;
 
 				case ValueType.Vec3 :
-					result = string.Format("{0}, {1}, {2}", 
-						_vec3Value.x.ToString("00"), 
-						_vec3Value.y.ToString("00"), 
-						_vec3Value.z.ToString("00"));
+					result = string.Concat(
+						_vec3Value.x.ToString("0.00"), ", ",
+						_vec3Value.y.ToString("0.00"), ", ",
+						_vec3Value.z.ToString("0.00"));
 				break;
 			}
 			return result;

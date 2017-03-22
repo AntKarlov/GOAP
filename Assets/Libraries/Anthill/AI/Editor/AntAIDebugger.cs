@@ -40,6 +40,7 @@ namespace Anthill.AI
 
 		private string _titleColor = "#61AFEF";
 		private string _nameColor = "#e5c07b";
+		private string _valueColor = "#51a9b0";
 		private string _trueColor = "#98C35F";
 		private string _falseColor = "#Dd6870";
 
@@ -401,10 +402,20 @@ namespace Anthill.AI
 		{
 			if (_blackboard != null)
 			{
+				bool value;
 				for (int i = 0, n = _blackboard.Count; i < n; i++)
 				{
-					aResult.Add(string.Format("      '<color=#51a9b0>{0}</color>' = '<color=#51a9b0>{1}</color>' ({2})",
-						_blackboard.GetKey(i), _blackboard[i].ToString(), _blackboard[i].Type));
+					if (_blackboard[i].Type == AntAIBlackboardProp.ValueType.Bool)
+					{
+						value = _blackboard[i].AsBool;
+						aResult.Add(string.Format("      '<color={3}>{0}</color>' = '<color={3}>{1}</color>' ({2})",
+							_blackboard.GetKey(i), _blackboard[i].ToString(), _blackboard[i].Type, (value) ? _trueColor : _falseColor));
+					}
+					else
+					{
+						aResult.Add(string.Format("      '<color={3}>{0}</color>' = '<color={3}>{1}</color>' ({2})",
+							_blackboard.GetKey(i), _blackboard[i].ToString(), _blackboard[i].Type, _valueColor));
+					}
 				}
 			}
 		}

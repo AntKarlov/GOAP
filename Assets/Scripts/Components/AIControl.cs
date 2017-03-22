@@ -17,12 +17,7 @@ namespace Game.Components
 		}
 
 		#endregion
-		#region Public Methods
-
-		// ..
-
-		#endregion
-		#region Getters/Setters
+		#region IAgentProvider Implementation
 
 		public AntAIAgent Agent { get; set; }
 
