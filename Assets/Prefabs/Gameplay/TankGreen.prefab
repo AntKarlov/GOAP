@@ -33,6 +33,7 @@ GameObject:
   - component: {fileID: 114205184045014346}
   - component: {fileID: 114043621649706758}
   - component: {fileID: 114660731454008096}
+  - component: {fileID: 114109167229667578}
   m_Layer: 13
   m_Name: TankGreen
   m_TagString: Untagged
@@ -148,6 +149,17 @@ MonoBehaviour:
   force: 0.025
   collectDistance: 0.5
   magnetKind: 0
+--- !u!114 &114109167229667578
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1391783177018186}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d2c9f1c2e33a4af6ad8c5e6298943fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114205184045014346
 MonoBehaviour:
   m_ObjectHideFlags: 1
