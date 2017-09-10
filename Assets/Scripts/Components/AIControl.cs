@@ -6,8 +6,8 @@ namespace Game.Components
 {
 	public class AIControl : MonoBehaviour, IAgentProvider
 	{
-		[NonSerializedAttribute] public float currentTime;
-		[NonSerializedAttribute] public float updateInterval;
+		[NonSerialized] public float currentTime;
+		[NonSerialized] public float updateInterval;
 
 		#region Unity Callbacks
 

@@ -21,11 +21,13 @@ namespace Game.Components
 
 		private Transform _t;
 		private GameCore _gameCore;
-		private ItemKind[] _rndList = new ItemKind[] { 
+		private ItemKind[] _rndList = new ItemKind[] 
+		{ 
 			ItemKind.Gun,
 			ItemKind.Bomb,
 			ItemKind.Ammo,
-			ItemKind.Heal };
+			ItemKind.Heal
+		};
 
 		private void Awake()
 		{
