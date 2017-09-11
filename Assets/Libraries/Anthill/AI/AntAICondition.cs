@@ -6,6 +6,8 @@ namespace Anthill.AI
 		public bool[] values;
 		public bool[] mask;
 
+		private AntAIPlanner _currentPlanner;
+
 		public AntAICondition()
 		{
 			values = new bool[AntAIPlanner.MAX_ATOMS];
@@ -21,10 +23,32 @@ namespace Anthill.AI
 			}
 		}
 
+		public void BeginUpdate(AntAIPlanner aPlanner)
+		{
+			_currentPlanner = aPlanner;
+		}
+
+		public void EndUpdate()
+		{
+			_currentPlanner = null;
+		}
+
+		public bool Has(string aAtomName)
+		{
+			return Has(_currentPlanner, aAtomName);
+		}
+
 		public bool Has(AntAIPlanner aPlanner, string aAtomName)
 		{
 			int index = aPlanner.GetAtomIndex(aAtomName);
-			return (index >= 0 && index < values.Length) ? values[index] : false;
+			return (index >= 0 && index < values.Length) 
+				? values[index] 
+				: false;
+		}
+
+		public bool Set(string aAtomName, bool aValue)
+		{
+			return Set(_currentPlanner.GetAtomIndex(aAtomName), aValue);
 		}
 
 		public bool Set(AntAIPlanner aPlanner, string aAtomName, bool aValue)

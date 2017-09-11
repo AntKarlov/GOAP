@@ -29,6 +29,7 @@ namespace Anthill.AI
 		private AntAIBlackboard _blackboard;
 		private List<AntAIDebuggerNode> _nodes;
 		private List<AntAIDebuggerNode> _genericNodes;
+		private List<AntAIDebuggerNode> _goalNodes;
 		private Vector2 _planNodesPosition;
 		private List<TitleData> _titles;
 		private AntAIPlan _currentPlan;
@@ -74,6 +75,7 @@ namespace Anthill.AI
 
 			_nodes = new List<AntAIDebuggerNode>();
 			_genericNodes = new List<AntAIDebuggerNode>();
+			_goalNodes = new List<AntAIDebuggerNode>();
 			_titles = new List<TitleData>();
 		}
 
@@ -87,6 +89,7 @@ namespace Anthill.AI
 				{
 					_nodes.Clear();
 					_genericNodes.Clear();
+					_goalNodes.Clear();
 					_titles.Clear();
 
 					if (_agent != null)
@@ -101,6 +104,7 @@ namespace Anthill.AI
 					_blackboard = b;
 
 					_nodes.Clear();
+					_goalNodes.Clear();
 					_titles.Clear();
 					
 					CreateTitle(0.0f, 0.0f, string.Format("{0}: Actions and Goals", Selection.activeGameObject.name));
@@ -143,8 +147,8 @@ namespace Anthill.AI
 			{
 				if (Event.current.type == EventType.Repaint)
 				{
-					GUI.Label(new Rect(10.0f, 10.0f, 
-						200.0f, 50.0f), "Object with AI Not Selected.", _titleStyle);
+					GUI.Label(new Rect(10.0f, 10.0f, 200.0f, 50.0f), 
+						"Object with AI Not Selected.", _titleStyle);
 				}
 			}
 		}
@@ -158,6 +162,7 @@ namespace Anthill.AI
 			_currentPlan = aPlan;
 			UpdatePlan(_totalDrag + _planNodesPosition, out v);
 
+			UpdateGoalNodes();
 			UpdateBlackboardNode();
 			if (_blackboardNode != null)
 			{
@@ -225,7 +230,10 @@ namespace Anthill.AI
 						actionNode = CreateActionNode(action, ref aNodePosition);
 						actionNode.SetOutput(actionNode.rect.width * 0.5f, actionNode.rect.height - 10.0f);
 						totalWidth += actionNode.rect.width;
-						totalHeight = (actionNode.rect.height > totalHeight) ? actionNode.rect.height : totalHeight;
+						totalHeight = (actionNode.rect.height > totalHeight) 
+							? actionNode.rect.height 
+							: totalHeight;
+
 						toLinkNodes.Add(actionNode);
 						foundCount++;
 					}
@@ -251,7 +259,9 @@ namespace Anthill.AI
 					}
 
 					totalHeight += stateNode.rect.height;
-					aMaxHeigth = (totalHeight > aMaxHeigth) ? totalHeight : aMaxHeigth;
+					aMaxHeigth = (totalHeight > aMaxHeigth) 
+						? totalHeight 
+						: aMaxHeigth;
 				}
 				else
 				{
@@ -273,6 +283,11 @@ namespace Anthill.AI
 					stateNode = CreateMissingStateNode(unusedActions[i].Key.state, statePos);
 					stateNode.SetInput(stateNode.rect.width * 0.5f, 10.0f);
 					actionNode.LinkTo(stateNode, new Color(0.7f, 0.2f, 0.3f));
+
+					totalHeight += stateNode.rect.height;
+					aMaxHeigth = (totalHeight > aMaxHeigth) 
+						? totalHeight 
+						: aMaxHeigth;
 				}
 			}
 
@@ -288,7 +303,17 @@ namespace Anthill.AI
 				totalHeight += stateNode.rect.height;
 			}
 
-			aMaxHeigth = (totalHeight > aMaxHeigth) ? totalHeight : aMaxHeigth;
+			aMaxHeigth = (totalHeight > aMaxHeigth) 
+				? totalHeight 
+				: aMaxHeigth;
+		}
+
+		private void UpdateGoalNodes()
+		{
+			for (int i = 0, n = _goalNodes.Count; i < n; i++)
+			{
+				_goalNodes[i].IsHighlighted = _goalNodes[i].value.Equals(_agent.currentGoal.name);
+			}
 		}
 
 		private void RebuildGoalNodes(Vector2 aNodePosition, out float aMaxHeight)
@@ -298,7 +323,12 @@ namespace Anthill.AI
 			for (int i = 0, n = _agent.planner.goals.Count; i < n; i++)
 			{
 				goalNode = CreateGoalNode(_agent.planner.goals[i], ref aNodePosition);
-				aMaxHeight = (goalNode.rect.height > aMaxHeight) ? goalNode.rect.height : aMaxHeight;
+				aMaxHeight = (goalNode.rect.height > aMaxHeight) 
+					? goalNode.rect.height 
+					: aMaxHeight;
+
+				goalNode.value = _agent.planner.goals[i].name;
+				_goalNodes.Add(goalNode);
 			}
 		}
 
@@ -347,7 +377,9 @@ namespace Anthill.AI
 					node = CreatePlanNode(action, conditions, prevConditions, ref aNodePosition);
 				}
 				
-				aMaxHeight = (node.rect.height > aMaxHeight) ? node.rect.height : aMaxHeight;
+				aMaxHeight = (node.rect.height > aMaxHeight) 
+					? node.rect.height 
+					: aMaxHeight;
 				curIndex++;
 			}
 		}
@@ -537,8 +569,7 @@ namespace Anthill.AI
 				text.AppendLine(desc[i]);
 			}
 
-			GUIStyle style = (System.Object.ReferenceEquals(aGoal, _agent.currentGoal)) ? _activeGoalStyle : _goalStyle;
-			return AddNode(text.ToString(), 220.0f, CalcHeight(desc.Count), style, style, ref aNodePosition);
+			return AddNode(text.ToString(), 220.0f, CalcHeight(desc.Count), _goalStyle, _activeGoalStyle, ref aNodePosition);
 		}
 
 		/// <summary>
@@ -681,6 +712,8 @@ namespace Anthill.AI
 			{
 				aNode.defaultNodeStyle = (aAction.name.Equals(_agent.currentPlan[0])) ? _activeFailedPlanStyle : _failedPlanStyle;
 			}
+
+			aNode.currentStyle = aNode.defaultNodeStyle;
 		}
 
 		/// <summary>
@@ -712,8 +745,8 @@ namespace Anthill.AI
 			for (int i = 0, n = aList.Count; i < n; i++)
 			{
 				t = aList[i];
-				GUI.Label(new Rect(t.rect.x + _totalDrag.x, t.rect.y + _totalDrag.y, 
-					t.rect.width, t.rect.height), t.text, _titleStyle);
+				GUI.Label(new Rect(t.rect.x + _totalDrag.x, t.rect.y + _totalDrag.y, t.rect.width, t.rect.height),
+					t.text, _titleStyle);
 			}
 		}
 

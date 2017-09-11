@@ -4,7 +4,7 @@ using UnityEditor;
 namespace Anthill.AI
 {
 	[CustomEditor(typeof(AntAIScenario))]
-	public class AntAIScenarioEditor : Editor
+	public class AntAIScenarioEditor : UnityEditor.Editor
 	{
 		private AntAIScenario _self;
 		private GUIStyle _rowStyleA;

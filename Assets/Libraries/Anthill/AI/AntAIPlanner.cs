@@ -117,7 +117,9 @@ namespace Anthill.AI
 
 		public string GetState(string aActionName)
 		{
-			return FindAction(aActionName).state;
+			var action = FindAction(aActionName);
+			AntLog.Assert(action == null, string.Format("Action \"{0}\" not registered!", aActionName), true);
+			return action.state;
 		}
 
 		public string NameIt(bool[] aBits)
@@ -218,7 +220,7 @@ namespace Anthill.AI
 
 		public AntAIAction FindAction(string aActionName)
 		{
-			return actions.Find(x => x.name.Equals(aActionName));
+			return actions.Find(x => (x.name != null && x.name.Equals(aActionName)));
 		}
 
 		public void MakePlan(ref AntAIPlan aPlan, AntAICondition aCurrent, AntAICondition aGoal)

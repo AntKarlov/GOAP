@@ -19,6 +19,8 @@ namespace Anthill.AI
 		public GUIStyle defaultNodeStyle;
 		public GUIStyle selectedNodeStyle;
 
+		private bool _isHighlight;
+
 		public AntAIDebuggerNode(float aX, float aY, float aWidth, float aHeight, 
 			GUIStyle aDefaultStyle, GUIStyle aSelectedStyle)
 		{
@@ -109,6 +111,18 @@ namespace Anthill.AI
 		public Vector2 Input
 		{
 			get { return new Vector2(rect.x + inputOffset.x, rect.y + inputOffset.y); }
+		}
+
+		public bool IsHighlighted
+		{
+			get { return _isHighlight; }
+			set
+			{
+				_isHighlight = value;
+				currentStyle = (_isHighlight)
+					? selectedNodeStyle
+					: defaultNodeStyle;
+			}
 		}
 	}
 }

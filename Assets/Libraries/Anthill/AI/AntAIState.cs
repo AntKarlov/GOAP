@@ -8,12 +8,15 @@ namespace Anthill.AI
 
 		protected List<string> _interruptions;
 		protected bool _isFinished;
+		
+		public bool AllowForceInterrupting { get; protected set; }
 
 		public AntAIState(string aName)
 		{
 			name = aName;
 			_interruptions = new List<string>();
 			_isFinished = false;
+			AllowForceInterrupting = true;
 		}
 
 		public void AddInterrupt(string aConditionName)
@@ -43,12 +46,7 @@ namespace Anthill.AI
 
 		public bool IsFinished(AntAIAgent aAgent, AntAICondition aWorldState)
 		{
-			if (_isFinished || OverlapInterrupts(aAgent.planner, aWorldState))
-			{
-				Reset();
-				return true;
-			}
-			return false;
+			return (_isFinished || OverlapInterrupts(aAgent.planner, aWorldState));
 		}
 
 		public bool OverlapInterrupts(AntAIPlanner aPlanner, AntAICondition aConditions)

@@ -15,6 +15,9 @@ namespace Anthill.AI
 		public AntAICondition currentGoal;   // Текущая цель.
 		public AntAICondition defaultGoal;   // Цель по умолчанию.
 
+		// Если установить flase, то план будет построен, но выполнятся не будет.
+		public bool allowSetNewState;
+
 		public AntAIAgent()
 		{
 			sense = null;
@@ -24,6 +27,7 @@ namespace Anthill.AI
 			planner = new AntAIPlanner();
 			currentPlan = new AntAIPlan();
 			currentGoal = null;
+			allowSetNewState = true;
 		}
 
 		#region Public Methods
@@ -57,7 +61,7 @@ namespace Anthill.AI
 					// выбираем новое состояние и принудительно устанавливаем его.
 					SetState(SelectNewState(worldState), true);
 				}
-				else
+				else if (currentState.AllowForceInterrupting)
 				{
 					// Если текущее состояние по прежнему активно (не было прервано или закончено), тогда
 					// обновляем план на основе текущей обстановки мира и меняем состояние только 
@@ -72,15 +76,17 @@ namespace Anthill.AI
 		/// </summary>
 		public string SelectNewState(AntAICondition aWorldState)
 		{
-			string newState = "";
-
+			string newState = defaultState.name;
 			if (currentGoal != null)
 			{
 				planner.MakePlan(ref currentPlan, aWorldState, currentGoal);
-				if (currentPlan.isSuccess)
+				if (currentPlan.isSuccess || currentPlan.Count > 0)
 				{
 					string actionName = planner.GetAction(currentPlan[0]).name;
-					newState = planner.GetState(actionName);
+					if (allowSetNewState)
+					{
+						newState = planner.GetState(actionName);
+					}
 					
 					/* Отладочный вывод плана в консоль.
 					AntAICondition condition = aConditions.Clone();
@@ -97,7 +103,7 @@ namespace Anthill.AI
 			}
 			else
 			{
-				AntLog.Report("AntAIAgent", "Goal not defined!");
+				AntLog.Report("AntAIAgent", "<b>Goal</b> is not defined!");
 			}
 
 			return newState;
@@ -119,7 +125,7 @@ namespace Anthill.AI
 			currentGoal = FindGoal(aGoalName);
 			if (currentGoal == null)
 			{
-				AntLog.Report("AIControl", "Can't find \"{0}\" goal.", aGoalName);
+				AntLog.Report("AntAIAgent", "Can't find \"{0}\" goal.", aGoalName);
 				SetDefaultGoal();
 			}
 		}
@@ -135,7 +141,7 @@ namespace Anthill.AI
 			}
 			else
 			{
-				AntLog.Report("AIControl", "Default Goal not defined!");
+				AntLog.Report("AntAIAgent", "Default <b>Goal</b> is not defined!");
 			}
 		}
 
@@ -147,7 +153,7 @@ namespace Anthill.AI
 			defaultState = FindState(aStateName);
 			if (defaultState == null)
 			{
-				AntLog.Report("AIControl", "Can't set \"{0}\" as Default State because it is not existing!", aStateName);
+				AntLog.Report("AntAIAgent", "Can't set \"{0}\" as <b>Default State</b> because it is not existing!", aStateName);
 			}
 		}
 
@@ -161,16 +167,10 @@ namespace Anthill.AI
 				currentState.Stop();
 			}
 
-			if (defaultState != null)
-			{
-				currentState = defaultState;
-				currentState.Reset();
-				currentState.Start();
-			}
-			else
-			{
-				AntLog.Report("AIControl", "Default State not defined!");
-			}
+			AntLog.Assert(defaultState == null, "Default <b>State</b> is not defined!", true);
+			currentState = defaultState;
+			currentState.Reset();
+			currentState.Start();
 		}
 		
 		/// <summary>
@@ -180,11 +180,7 @@ namespace Anthill.AI
 		{
 			if (aForce || !string.Equals(currentState.name, aStateName))
 			{
-				if (currentState != null)
-				{
-					currentState.Stop();
-				}
-
+				currentState.Stop();
 				currentState = FindState(aStateName);
 				if (currentState != null)
 				{
@@ -193,7 +189,7 @@ namespace Anthill.AI
 				}
 				else
 				{
-					AntLog.Report("AIControl", "Can't find \"{0}\" state.", aStateName);
+					AntLog.Report("AntAIAgent", "Can't find \"{0}\" state.", aStateName);
 					SetDefaultState();
 				}
 			}
