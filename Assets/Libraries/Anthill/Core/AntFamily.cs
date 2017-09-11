@@ -22,6 +22,8 @@ namespace Anthill.Core
 			_components = type.GetProperties().ToDictionary(propInfo => propInfo.PropertyType, propInfo => propInfo);
 		}
 
+		#region Public Methods
+
 		public void ComponentAdded(AntEntity aEntity, Type aComponentType)
 		{
 			if (!_entities.ContainsKey(aEntity))
@@ -54,6 +56,9 @@ namespace Anthill.Core
 			}
 		}
 
+		#endregion
+		#region Private Methods
+
 		private void AddEntity(AntEntity aEntity)
 		{
 			foreach (var pair in _components)
@@ -83,9 +88,14 @@ namespace Anthill.Core
 			_nodes.Remove(node);
 		}
 
+		#endregion
+		#region Getters / Setters
+
 		public AntNodeList<T> Nodes
 		{
 			get { return _nodes; }
 		}
+
+		#endregion
 	}
 }

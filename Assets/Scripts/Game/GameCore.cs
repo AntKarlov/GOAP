@@ -26,14 +26,8 @@ namespace Game.Core
 		{
 			engine = new AntEngine();
 
-			// Инициализация игровых систем в движок.
-			engine.AddSystem(new MovementSystem(), SystemPriority.movementSystem);
-			engine.AddSystem(new PlayerControlSystem(), SystemPriority.playerControlSystem);
-			engine.AddSystem(new AIControlSystem(), SystemPriority.aiControlSystem);
-			engine.AddSystem(new MagnetSystem(), SystemPriority.magnetSystem);
-			engine.AddSystem(new HealthSystem(), SystemPriority.healthSystem);
-			engine.AddSystem(new DropperSystem(), SystemPriority.dropperSystem);
-			engine.AddSystem(new SpawnSystem(), SystemPriority.spawnSystem);
+			// Инициализация сценариев.
+			engine.Add(new GameplayScenario(), SystemPriority.gameplay);
 
 			// Инициализация игровых объектов находящихся на сцене.
 			engine.AddEntitiesFromHierarchy(transform);
@@ -42,7 +36,7 @@ namespace Game.Core
 		private void Update()
 		{
 			// Обработка всех игровых объектов добавленых в движок.
-			engine.Update(Time.deltaTime);
+			engine.Execute();
 		}
 
 		private void OnGUI()
@@ -52,7 +46,8 @@ namespace Game.Core
 			style.normal.textColor = Color.green;
 			Rect gRect = new Rect(50.0f, Screen.height - 50.0f, 300.0f, 150.0f);
 			GUI.Label(gRect, string.Format("{0}", RedKills), style);
-			style.fontSize = 20;
+
+			//style.fontSize = 20;
 			style.normal.textColor = Color.red;
 			Rect rRect = new Rect(Screen.width - 50.0f, Screen.height - 50.0f, 300.0f, 150.0f);
 			GUI.Label(rRect, string.Format("{0}", GreenKills), style);

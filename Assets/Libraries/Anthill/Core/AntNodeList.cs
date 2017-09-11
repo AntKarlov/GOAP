@@ -25,6 +25,8 @@ namespace Anthill.Core
 			_pending = new List<KeyValuePair<T, PendingChange>>();
 		}
 
+		#region Public Methods
+
 		public void Add(T aNode)
 		{
 			if (IsLocked)
@@ -74,6 +76,9 @@ namespace Anthill.Core
 			}
 		}
 
+		#endregion
+		#region Private Methods
+
 		private void ApplyPending()
 		{
 			KeyValuePair<T, PendingChange> pair;
@@ -92,6 +97,9 @@ namespace Anthill.Core
 			_pending.Clear();
 		}
 
+		#endregion
+		#region Getters / Setters
+
 		public T this[int aIndex]
 		{
 			get { return (aIndex >= 0 && aIndex < _nodes.Count) ? _nodes[aIndex] : default(T); }
@@ -106,5 +114,7 @@ namespace Anthill.Core
 		{
 			get { return (_lockCount > 0); }
 		}
+
+		#endregion
 	}
 }

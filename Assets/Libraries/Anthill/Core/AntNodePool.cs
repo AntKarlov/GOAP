@@ -12,6 +12,8 @@ namespace Anthill.Core
 			_availList = new List<T>();
 		}
 
+		#region Public Methods
+
 		public void Add(T aNode)
 		{
 			_availList.Add(aNode);
@@ -31,5 +33,7 @@ namespace Anthill.Core
 			}
 			return result;
 		}
+
+		#endregion
 	}
 }

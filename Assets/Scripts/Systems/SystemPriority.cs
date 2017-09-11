@@ -5,12 +5,6 @@ namespace Game.Systems
 	/// </summary>
 	public class SystemPriority
 	{
-		public static int movementSystem = 0;
-		public static int playerControlSystem = 1;
-		public static int aiControlSystem = 2;
-		public static int magnetSystem = 3;
-		public static int healthSystem = 4;
-		public static int dropperSystem = 5;
-		public static int spawnSystem = 6;
+		public static int gameplay = 0;
 	}
 }

@@ -15,18 +15,15 @@ namespace Anthill.Core
 
 		protected Transform _transform;
 
-		// -----------------------------------------------------
-		// Unity Callbacks
-		// -----------------------------------------------------
+		#region Unity Calls
 
 		private void Awake()
 		{
 			_transform = GetComponent<Transform>();
 		}
 
-		// -----------------------------------------------------
-		// Public Methods
-		// -----------------------------------------------------
+		#endregion
+		#region Public Methods
 
 		public bool Has(Type aType)
 		{
@@ -57,9 +54,8 @@ namespace Anthill.Core
 			}
 		}
 
-		// -----------------------------------------------------
-		// Protected Methods
-		// -----------------------------------------------------
+		#endregion
+		#region Protected Methods
 
 		internal void OnAddedToEngine()
 		{
@@ -82,9 +78,8 @@ namespace Anthill.Core
 			Destroy(aComponent);
 		}
 
-		// -----------------------------------------------------
-		// Getters / Setters
-		// -----------------------------------------------------
+		#endregion
+		#region Getters Setters
 
 		public Transform Transform
 		{
@@ -94,13 +89,13 @@ namespace Anthill.Core
 		public Vector2 Position
 		{
 			get { return new Vector2(_transform.position.x, _transform.position.y); }
-			set 
-			{
-				Vector2 v = _transform.position;
-				v.x = value.x;
-				v.y = value.y;
-				_transform.position = v;
-			}
+			set { _transform.position = value; }
+		}
+
+		public Vector2 Scale
+		{
+			get { return new Vector2(_transform.localScale.x, _transform.localScale.y); }
+			set { _transform.localScale = value; }
 		}
 
 		public Vector3 Position3D
@@ -114,5 +109,7 @@ namespace Anthill.Core
 			get { return _transform.rotation.eulerAngles.z; }
 			set { _transform.rotation = Quaternion.Euler(_transform.rotation.x, _transform.rotation.y, value); }
 		}
+
+		#endregion
 	}
 }

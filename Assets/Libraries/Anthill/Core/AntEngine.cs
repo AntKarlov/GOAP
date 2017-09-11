@@ -5,29 +5,23 @@ using UnityEngine;
 
 namespace Anthill.Core
 {
-	public class AntEngine
+	public class AntEngine : AntScenario
 	{
-		internal enum PendingChange
-		{
-			Add,
-			Remove
-		}
-
 		public static AntEngine Current { get; private set; }
 
-		private List<AntSystemPriority> _systems;
 		private Dictionary<Type, IFamily> _families;
 		private List<AntEntity> _entities;
-		private List<KeyValuePair<ISystem, PendingChange>> _pending;
-		private int _lockCount;
+		private List<DelayedCall> _delayedCalls;
 
-		public AntEngine()
+		#region Public Methods
+
+		public AntEngine() : base()
 		{
 			Current = this;
-			_systems = new List<AntSystemPriority>();
 			_families = new Dictionary<Type, IFamily>();
 			_entities = new List<AntEntity>();
-			_pending = new List<KeyValuePair<ISystem, PendingChange>>();
+			_delayedCalls = new List<DelayedCall>();
+			_engine = this;
 		}
 
 		public void AddEntitiesFromHierarchy(Transform aParent)
@@ -53,22 +47,22 @@ namespace Anthill.Core
 			}
 		}
 
-		public void AddEntity(GameObject aObjectWithEntity, bool aIncludeChildren = false)
+		public void AddEntity(GameObject aGameObject, bool aIncludeChildren = false)
 		{
-			AddEntity(aObjectWithEntity.transform, aIncludeChildren);
+			AddEntity(aGameObject.transform, aIncludeChildren);
 		}
 
-		public void AddEntity(Transform aObjectWithEntity, bool aIncludeChildren = false)
+		public void AddEntity(Transform aTransform, bool aIncludeChildren = false)
 		{
-			AntEntity entity = aObjectWithEntity.GetComponent<AntEntity>();
+			AntEntity entity = aTransform.GetComponent<AntEntity>();
 			if (entity != null)
 			{
 				AddEntity(entity);
-				if (aIncludeChildren && aObjectWithEntity.childCount > 0)
+				if (aIncludeChildren && aTransform.childCount > 0)
 				{
-					for (int i = 0, n = aObjectWithEntity.childCount; i < n; i++)
+					for (int i = 0, n = aTransform.childCount; i < n; i++)
 					{
-						AddEntity(aObjectWithEntity.GetChild(i), aIncludeChildren);
+						AddEntity(aTransform.GetChild(i), aIncludeChildren);
 					}
 				}
 			}
@@ -98,127 +92,6 @@ namespace Anthill.Core
 			aEntity.EventComponentRemoved -= OnComponentRemoved;
 			_entities.Remove(aEntity);
 			aEntity.OnRemovedFromEngine();
-		}
-
-		private void OnComponentAdded(AntEntity aEntity, Type aComponent)
-		{
-			foreach (var pair in _families)
-			{
-				pair.Value.ComponentAdded(aEntity, aComponent);
-			}
-		}
-
-		private void OnComponentRemoved(AntEntity aEntity, Type aComponent)
-		{
-			foreach (var pair in _families)
-			{
-				pair.Value.ComponentRemoved(aEntity, aComponent);
-			}
-		}
-
-		public void AddSystem(ISystem aSystem, int aPriority)
-		{
-			aSystem.Priority = aPriority;
-			if (!IsLocked)
-			{
-				_systems.Add(new AntSystemPriority(aSystem, aPriority));
-				_systems = _systems.OrderBy(sys => sys.Priority).ToList();
-				aSystem.Engine = this;
-				aSystem.AddedToEngine(this);
-			}
-			else
-			{
-				_pending.Add(new KeyValuePair<ISystem, PendingChange>(aSystem, PendingChange.Add));
-			}
-		}
-
-		public void RemoveSystem<T>()
-		{
-			ISystem system = (ISystem) GetSystem<T>();
-			if (system != null)
-			{
-				RemoveSystem(system);
-			}
-		}
-
-		public void RemoveSystem(ISystem aSystem)
-		{
-			if (!IsLocked)
-			{
-				_systems.RemoveAll(sys => sys.System == aSystem);
-				aSystem.RemovedFromEngine(this);
-				aSystem.Engine = null;
-			}
-			else
-			{
-				_pending.Add(new KeyValuePair<ISystem, PendingChange>(aSystem, PendingChange.Remove));
-			}
-		}
-
-		public void PauseSystem<T>()
-		{
-			ISystem system = (ISystem) GetSystem<T>();
-			if (system != null && !system.IsPaused)
-			{
-				system.Pause();
-			}
-		}
-
-		public void ResumeSystem<T>()
-		{
-			ISystem system = (ISystem) GetSystem<T>();
-			if (system != null && system.IsPaused)
-			{
-				system.Resume();
-			}
-		}
-
-		public bool IsSystemPaused<T>()
-		{
-			ISystem system = (ISystem) GetSystem<T>();
-			return (system != null) ? system.IsPaused : false;
-		}
-
-		public void PauseAllSystems()
-		{
-			foreach (var pair in _systems)
-			{
-				if (!pair.System.IsPaused)
-				{
-					pair.System.Pause();
-				}
-			}
-		}
-
-		public void ResumeAllSystems()
-		{
-			foreach (var pair in _systems)
-			{
-				if (pair.System.IsPaused)
-				{
-					pair.System.Resume();
-				}
-			}
-		}
-
-		public void ResetAllSystems()
-		{
-			foreach (var pair in _systems)
-			{
-				pair.System.Reset();
-			}
-		}
-
-		public T GetSystem<T>()
-		{
-			foreach (var pair in _systems)
-			{
-				if (pair.System is T)
-				{
-					return (T) pair.System;
-				}
-			}
-			return default(T);
 		}
 
 		public AntNodeList<T> GetNodes<T>()
@@ -251,53 +124,81 @@ namespace Anthill.Core
 			}
 		}
 
-		public void Update(float aDeltaTime)
+		public override void Execute()
 		{
-			for (int i = 0, n = _systems.Count; i < n; i++)
+			base.Execute();
+			for (int i = _delayedCalls.Count - 1; i >= 0; i--)
 			{
-				if (!_systems[i].System.IsPaused)
+				if (_delayedCalls[i].Update(Time.deltaTime))
 				{
-					_systems[i].System.Update(aDeltaTime);
+					_delayedCalls.RemoveAt(i);
 				}
 			}
 		}
 
-		public void Lock()
+		public void DelayedCall(float aDelay, Action aFunc)
 		{
-			_lockCount++;
+			var call = new DelayedCall();
+			call.SetProcess(aFunc);
+			call.delay = aDelay;
+			_delayedCalls.Add(call);
 		}
 
-		public void Unlock()
+		public void DelayedCall<T1>(float aDelay, Action<T1> aFunc, T1 aArg1)
 		{
-			_lockCount--;
-			if (_lockCount <= 0)
+			var call = new DelayedCall<T1>();
+			call.SetProcess(aFunc);
+			call.SetArgumens(aArg1);
+			call.delay = aDelay;
+			_delayedCalls.Add(call);
+		}
+
+		public void DelayedCall<T1, T2>(float aDelay, Action<T1, T2> aFunc, T1 aArg1, T2 aArg2)
+		{
+			var call = new DelayedCall<T1, T2>();
+			call.SetProcess(aFunc);
+			call.SetArgumens(aArg1, aArg2);
+			call.delay = aDelay;
+			_delayedCalls.Add(call);
+		}
+
+		public void DelayedCall<T1, T2, T3>(float aDelay, Action<T1, T2, T3> aFunc, T1 aArg1, T2 aArg2, T3 aArg3)
+		{
+			var call = new DelayedCall<T1, T2, T3>();
+			call.SetProcess(aFunc);
+			call.SetArgumens(aArg1, aArg2, aArg3);
+			call.delay = aDelay;
+			_delayedCalls.Add(call);
+		}
+
+		public void DelayedCall<T1, T2, T3, T4>(float aDelay, Action<T1, T2, T3, T4> aFunc, T1 aArg1, T2 aArg2, T3 aArg3, T4 aArg4)
+		{
+			var call = new DelayedCall<T1, T2, T3, T4>();
+			call.SetProcess(aFunc);
+			call.SetArgumens(aArg1, aArg2, aArg3, aArg4);
+			call.delay = aDelay;
+			_delayedCalls.Add(call);
+		}
+
+		#endregion
+		#region Event Handlers
+
+		private void OnComponentAdded(AntEntity aEntity, Type aComponent)
+		{
+			foreach (var pair in _families)
 			{
-				_lockCount = 0;
-				ApplyPending();
+				pair.Value.ComponentAdded(aEntity, aComponent);
 			}
 		}
 
-		public void ApplyPending()
+		private void OnComponentRemoved(AntEntity aEntity, Type aComponent)
 		{
-			KeyValuePair<ISystem, PendingChange> pair;
-			for (int i = 0, n = _pending.Count; i < n; i++)
+			foreach (var pair in _families)
 			{
-				pair = _pending[i];
-				if (pair.Value == PendingChange.Add)
-				{
-					AddSystem(pair.Key, pair.Key.Priority);
-				}
-				else
-				{
-					RemoveSystem(pair.Key);
-				}
+				pair.Value.ComponentRemoved(aEntity, aComponent);
 			}
-			_pending.Clear();
 		}
 
-		public bool IsLocked
-		{
-			get { return (_lockCount > 0); }
-		}
+		#endregion
 	}
 }

@@ -15,6 +15,12 @@ namespace Game.Map
 			_self = (WayMap) target;
 		}
 
+		public override void OnInspectorGUI()
+		{
+			base.OnInspectorGUI();
+			EditorGUILayout.HelpBox("Hold SHIFT key to add new points to way map or hold CTRL key to remove some points.", MessageType.Info);
+		}
+
 		private void OnSceneGUI()
 		{
 			bool dirty = false;
