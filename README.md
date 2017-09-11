@@ -23,6 +23,11 @@
 
 Управление танком WASD, стрельба - Spacebar.
 
+Чтобы открыть AIDebugger выберите в Unity Menu > Anthill > AIDebugger, после выделите
+любой игровой объект имеющий AIAgent на сцене чтобы увидеть его текущий план.
+
+![](https://github.com/AntKarlov/GOAP/blob/master/Assets/Graphics/goap_pic.gif)
+
 ## Известные проблемы
 
 * Боты кажутся «глупыми» по той причине, что для перемещения используют Way-Points вместо Nav-Mesh.
